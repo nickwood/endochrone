@@ -13,4 +13,8 @@ def calculate(X, Y, k=3):
 
 
 def initial_means(X, Y, k=3):
-    return np.array([random.sample(list(X), k=k), random.sample(list(Y), k=k)])
+    if len(X) != len(Y):
+        raise ValueError
+
+    rand_idx = random.sample(range(len(X)), k)
+    return np.transpose([(list(X)[i], list(Y)[i]) for i in rand_idx])

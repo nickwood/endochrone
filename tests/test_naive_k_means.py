@@ -47,9 +47,9 @@ def test_forgy_initialisation():
         assert means.shape == (2, n)
         assert len(set(means[0])) == n
         assert len(set(means[1])) == n
-        assert all([means[0][i] in X for i in range(n)])
-        assert all([means[1][j] in Y for j in range(n)])
+        for i in range(n):
+            assert np.where(X == means[0][i]) == np.where(Y == means[1][i])
 
 
-# test_forgy_initialisation()
+test_forgy_initialisation()
 # test_irises()
