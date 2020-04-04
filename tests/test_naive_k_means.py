@@ -3,6 +3,7 @@ from sklearn import datasets
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pytest
 from endochrone import naive_k_means
 # from itertools import combinations
 import random
@@ -38,6 +39,11 @@ def test_irises():
 def test_forgy_initialisation():
     X = np.array(random.sample(range(200), 20))
     Y = np.array(random.sample(range(200), 20))
+
+    # mismatched array lengths
+    with pytest.raises(ValueError):
+        assert naive_k_means.initial_means(X, Y[:-1])
+        assert naive_k_means.initial_means(X[2:], Y)
 
     # check default is k = 3
     assert naive_k_means.initial_means(X, Y).shape == (2, 3)
