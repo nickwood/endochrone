@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # from itertools import combinations
 import random
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import seaborn as sns
-from sklearn import datasets
+# import seaborn as sns
+# from sklearn import datasets
 
 from endochrone import naive_k_means as nkm
 
@@ -17,8 +17,8 @@ __license__ = "mit"
 
 
 def test_irises():
-    iris = datasets.load_iris()
-    iris_data = np.array(iris['data'])
+    # iris = datasets.load_iris()
+    # iris_data = np.array(iris['data'])
     assert True
     # pair_plot = False
     # if pair_plot:
@@ -41,23 +41,23 @@ def test_irises():
 def test_forgy_initialisation():
     with pytest.raises(ValueError):
         # too many columns
-        assert nkm.initial_means(np.array([[1, 2, 3], [3, 4, 5]]))
+        assert nkm.initial_centroids(np.array([[1, 2, 3], [3, 4, 5]]))
         # too few columns
-        assert nkm.initial_means(np.array([[1], [3], [4], [5]]))
+        assert nkm.initial_centroids(np.array([[1], [3], [4], [5]]))
         # need at least n rows
-        assert nkm.initial_means(np.array([[1, 2], [3, 4]]))
+        assert nkm.initial_centroids(np.array([[1, 2], [3, 4]]))
 
     data = np.transpose([random.sample(range(200), 20),
                          random.sample(range(200), 20)])
 
     # check default is k = 3
-    assert nkm.initial_means(data).shape == (3, 2)
+    assert nkm.initial_centroids(data).shape == (3, 2)
 
     for n in [2, 8, 15]:
-        means = nkm.initial_means(data, n)
-        assert means.shape == (n, 2)
+        centroids = nkm.initial_centroids(data, n)
+        assert centroids.shape == (n, 2)
         for i in range(n):
-            assert means[i] in data
+            assert centroids[i] in data
 
 
 def test_euclidian_dist():

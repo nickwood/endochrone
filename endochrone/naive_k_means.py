@@ -8,11 +8,11 @@ __license__ = "mit"
 
 
 def calculate(data, k=3):
-    means = initial_means(data, k)
-    return means
+    centroids = initial_centroids(data, k)
+    return centroids
 
 
-def initial_means(data, k=3):
+def initial_centroids(data, k=3):
     if data.shape[1] != 2 or data.shape[0] < k:
         raise ValueError
 
