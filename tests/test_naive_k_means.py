@@ -7,9 +7,9 @@ import pytest
 import seaborn as sns
 from sklearn import datasets
 
-from endochrone import naive_k_means
+from endochrone import naive_k_means as nkm
 
-# from pprint import pprint as pp
+from pprint import pprint as pp
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -41,20 +41,20 @@ def test_irises():
 def test_forgy_initialisation():
     with pytest.raises(ValueError):
         # too many columns
-        assert naive_k_means.initial_means(np.array([[1, 2, 3], [3, 4, 5]]))
+        assert nkm.initial_means(np.array([[1, 2, 3], [3, 4, 5]]))
         # too few columns
-        assert naive_k_means.initial_means(np.array([[1], [3], [4], [5]]))
+        assert nkm.initial_means(np.array([[1], [3], [4], [5]]))
         # need at least n rows
-        assert naive_k_means.initial_means(np.array([[1, 2], [3, 4]]))
+        assert nkm.initial_means(np.array([[1, 2], [3, 4]]))
 
     data = np.transpose([random.sample(range(200), 20),
                          random.sample(range(200), 20)])
 
     # check default is k = 3
-    assert naive_k_means.initial_means(data).shape == (3, 2)
+    assert nkm.initial_means(data).shape == (3, 2)
 
     for n in [2, 8, 15]:
-        means = naive_k_means.initial_means(data, n)
+        means = nkm.initial_means(data, n)
         assert means.shape == (n, 2)
         for i in range(n):
             assert means[i] in data
