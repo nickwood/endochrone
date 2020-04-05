@@ -7,14 +7,14 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-def calculate(X, Y, k=3):
+def calculate(data, k=3):
+    means = initial_means(data, k)
+    return means
 
-    return True
 
-
-def initial_means(X, Y, k=3):
-    if len(X) != len(Y):
+def initial_means(data, k=3):
+    if data.shape[1] != 2 or data.shape[0] < k:
         raise ValueError
 
-    rand_idx = random.sample(range(len(X)), k)
-    return np.transpose([(list(X)[i], list(Y)[i]) for i in rand_idx])
+    rand_idx = random.sample(range(data.shape[0]), k)
+    return data[rand_idx, :]

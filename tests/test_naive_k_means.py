@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from sklearn import datasets
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pytest
-from endochrone import naive_k_means
 # from itertools import combinations
 import random
+import matplotlib.pyplot as plt
+import numpy as np
+import pytest
+import seaborn as sns
+from sklearn import datasets
+
+from endochrone import naive_k_means
+
 # from pprint import pprint as pp
 
 __author__ = "nickwood"
@@ -31,31 +33,32 @@ def test_irises():
         i += 1
         X = np.transpose(iris_data[:, axis1:axis1 + 1])
         Y = np.transpose(iris_data[:, axis2:axis2 + 1])
-        # pp(X)
+        pp(X)
         # pp(Y)
         print(naive_k_means.calculate(X, Y, 3))
 
 
 def test_forgy_initialisation():
-    X = np.array(random.sample(range(200), 20))
-    Y = np.array(random.sample(range(200), 20))
-
-    # mismatched array lengths
     with pytest.raises(ValueError):
-        assert naive_k_means.initial_means(X, Y[:-1])
-        assert naive_k_means.initial_means(X[2:], Y)
+        # too many columns
+        assert naive_k_means.initial_means(np.array([[1, 2, 3], [3, 4, 5]]))
+        # too few columns
+        assert naive_k_means.initial_means(np.array([[1], [3], [4], [5]]))
+        # need at least n rows
+        assert naive_k_means.initial_means(np.array([[1, 2], [3, 4]]))
+
+    data = np.transpose([random.sample(range(200), 20),
+                         random.sample(range(200), 20)])
 
     # check default is k = 3
-    assert naive_k_means.initial_means(X, Y).shape == (2, 3)
+    assert naive_k_means.initial_means(data).shape == (3, 2)
 
     for n in [2, 8, 15]:
-        means = naive_k_means.initial_means(X, Y, n)
-        assert means.shape == (2, n)
-        assert len(set(means[0])) == n
-        assert len(set(means[1])) == n
+        means = naive_k_means.initial_means(data, n)
+        assert means.shape == (n, 2)
         for i in range(n):
-            assert np.where(X == means[0][i]) == np.where(Y == means[1][i])
+            assert means[i] in data
 
 
-test_forgy_initialisation()
+# test_forgy_initialisation()
 # test_irises()
