@@ -30,3 +30,10 @@ def nearest_centroid(point, centroids):
 
 def nearest_centroids(data, centroids):
     return np.transpose([[nearest_centroid(p, centroids) for p in data]])
+
+
+def recalculate_centroids(data, assignments, k=3):
+    centroids = np.zeros((k, 2), dtype=float)
+    for i in range(k):
+        centroids[i, :] = np.mean(data[assignments[:, 0] == i], axis=0)
+    return centroids
