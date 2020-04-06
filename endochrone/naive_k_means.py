@@ -7,9 +7,22 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-def calculate(data, k=3):
-    centroids = initial_centroids(data, k)
-    return centroids
+def calculate(data, k=3, centroids=None):
+    "return k centroids ordered by 1st coordinate"
+    if centroids is None:
+        centroids = initial_centroids(data, k)
+    old_centroids = np.zeros(centroids.shape)
+    while np.any(old_centroids != centroids):
+        old_centroids = centroids
+        centroids = calculate_step(data, centroids, k)
+
+    return centroids[np.argsort(centroids[:, 0])]
+
+
+def calculate_step(data, old_centroids, k=3):
+    assignments = nearest_centroids(data, old_centroids)
+    new_centroids = recalculate_centroids(data, assignments, k)
+    return new_centroids
 
 
 def initial_centroids(data, k=3):

@@ -11,6 +11,35 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+def test_calculate():
+    X = np.transpose([[1, 2, 3, 7, 8, 9, 10]])
+    Y = np.transpose([[3, 4, 5, 1, 2, 3, 4]])
+
+    data = np.concatenate([X, Y], axis=1)
+    centroids = np.array([[1, 3], [7, 1]])
+
+    act = nkm.calculate(data, k=2, centroids=centroids)
+    exp = np.array([[2, 4], [8.5, 2.5]])
+    assert np.all(act == pytest.approx(exp))
+
+    act = nkm.calculate(data, k=2)
+    exp = np.array([[2, 4], [8.5, 2.5]])
+    assert np.all(act == pytest.approx(exp))
+
+
+def test_calculate_step():
+    X = np.transpose([[1, 2, 3, 7, 8, 9]])
+    Y = np.transpose([[3, 4, 5, 1, 2, 3]])
+
+    data = np.concatenate([X, Y], axis=1)
+    centroids = np.array([[1, 7], [9, 3]])
+
+    act = nkm.calculate_step(data, centroids, k=2)
+    exp = np.array([[2, 4], [8, 2]])
+
+    assert np.all(act == pytest.approx(exp))
+
+
 def test_forgy_initialisation():
     with pytest.raises(ValueError):
         # too many columns
@@ -88,9 +117,10 @@ def test_recalculate_centroids():
     assert np.all(data == np.concatenate([X, Y], axis=1))
 
 
-test_forgy_initialisation()
-test_euclidian_dist()
-test_nearest_centroid()
-test_nearest_centroids()
-test_recalculate_centroids()
-# test_irises()
+# test_forgy_initialisation()
+# test_euclidian_dist()
+# test_nearest_centroid()
+# test_nearest_centroids()
+# test_recalculate_centroids()
+# test_calculate_step()
+# test_calculate()
