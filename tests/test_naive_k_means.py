@@ -94,6 +94,7 @@ def test_nearest_centroids():
     exp = np.transpose([[0, 0, 0, 1, 1, 1]])
     act = nkm.nearest_centroids(data, centroids)
     assert np.all(act == exp)
+    assert np.all(data == np.concatenate([X, Y], axis=1))
 
 
 def test_recalculate_centroids():
@@ -111,6 +112,7 @@ def test_recalculate_centroids():
     act = nkm.recalculate_centroids(data, assignments_2, k=3)
     exp = np.array([[1.5, 3.5], [5, 3], [8.5, 2.5]])
     assert np.all(act == pytest.approx(exp))
+    assert np.all(data == np.concatenate([X, Y], axis=1))
 
 
 test_forgy_initialisation()
