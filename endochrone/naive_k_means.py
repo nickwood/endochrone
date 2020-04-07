@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import random
+from endochrone.measures import euclidean_dist
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -31,10 +32,6 @@ def initial_centroids(data, k=3):
 
     rand_idx = random.sample(range(data.shape[0]), k)
     return data[rand_idx, :]
-
-
-def euclidean_dist(A, B):
-    return np.sqrt(np.sum((A-B)**2))
 
 
 def nearest_centroid(point, centroids):

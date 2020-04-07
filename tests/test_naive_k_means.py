@@ -62,22 +62,6 @@ def test_forgy_initialisation():
             assert centroids[i] in data
 
 
-def test_euclidian_dist():
-    A = np.array([0, 0])
-    B = np.array([3, 4])
-    C = np.array([12, 10])
-    D = np.array([0, 3])
-    E = np.array([0.7, 2.8])
-
-    assert nkm.euclidean_dist(A, B)**2 == pytest.approx(25.0)
-    assert nkm.euclidean_dist(B, C)**2 == pytest.approx(117.0)
-    assert nkm.euclidean_dist(C, D)**2 == pytest.approx(193.0)
-    assert nkm.euclidean_dist(A, C)**2 == pytest.approx(244.0)
-    assert nkm.euclidean_dist(B, D)**2 == pytest.approx(10.0)
-    assert nkm.euclidean_dist(A, D)**2 == pytest.approx(9.0)
-    assert nkm.euclidean_dist(B, E)**2 == pytest.approx(6.73)
-
-
 def test_nearest_centroid():
     centroids = np.array([[2, 4], [8, 2]])
     assert nkm.nearest_centroid([0, 0], centroids) == 0
