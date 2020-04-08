@@ -17,8 +17,8 @@ class LinearRegression:
         X_T = X.transpose()
         XTX_inv = np.linalg.inv(X_T@X)
         beta_vector = (XTX_inv@X_T@self.y_train)
-        self.intercept_ = int(beta_vector[0])
-        self.coef_ = beta_vector[1:]
+        self.intercept_ = beta_vector[0, 0]
+        self.coef_ = beta_vector[1:, 0]
 
     def predict(self, X_test):
         y = [np.sum(point*self.coef_) + self.intercept_ for point in X_test]
