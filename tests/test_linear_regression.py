@@ -67,6 +67,7 @@ def test_nd_nonzero_intercept(n_samples=100, dim=4):
                        for point in X_test])[:, np.newaxis]
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test, abs=0.2))
+    assert model.score(X_test, Y_test) > 0.999
 
 
 # test_2d_zero_intercept()

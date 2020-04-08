@@ -23,3 +23,14 @@ class LinearRegression:
     def predict(self, X_test):
         y = [np.sum(point*self.coef_) + self.intercept_ for point in X_test]
         return np.array(y)[:, np.newaxis]
+
+    def score(self, X_true, Y_true):
+        """Return the R^2 value for the prediction
+        R^2 = 1- u/v with:
+        u = ((y_true - y_pred) ** 2).sum()
+        v = ((y_true - y_true.mean()) ** 2).sum()
+        """
+        Y_pred = self.predict(X_true)
+        u = np.sum((Y_true - Y_pred)**2)
+        v = np.sum((Y_true - np.mean(Y_true))**2)
+        return 1 - u/v
