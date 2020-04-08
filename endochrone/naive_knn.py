@@ -9,15 +9,14 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-def classify(x_train, y_train, test_data, k=3):
-    return np.transpose([[classify_point(x_train, y_train, point, k)
-                        for point in test_data]])
+def classify(x_train, y_train, x_test, k=3):
+    return np.array([classify_point(x_train, y_train, point, k)
+                     for point in x_test])[:, np.newaxis]
 
 
 def classify_point(x_train, y_train, point, k):
     distances = [euclidean_dist(t_point, point) for t_point in x_train]
-    sort_order = np.argsort(distances)
-    return majority_concensus(y_train[sort_order[:k]])
+    return majority_concensus(y_train[np.argsort(distances)[:k]])
 
 
 def majority_concensus(classifications):
