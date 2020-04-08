@@ -7,16 +7,17 @@ __license__ = "mit"
 
 
 class LinearRegression:
-    def __init__(self, X_train, y_train):
-        self.X_train = X_train
-        self.y_train = y_train
+    def __init__(self):
+        pass
 
-    def fit(self):
+    def fit(self, X_train, Y_train):
+        self.X_train = X_train
+        self.Y_train = Y_train
         n_samples = self.X_train.shape[0]
         X = np.c_[np.ones(n_samples), self.X_train]
         X_T = X.transpose()
         XTX_inv = np.linalg.inv(X_T@X)
-        beta_vector = (XTX_inv@X_T@self.y_train)
+        beta_vector = (XTX_inv@X_T@self.Y_train)
         self.intercept_ = beta_vector[0, 0]
         self.coef_ = beta_vector[1:, 0]
 
@@ -27,8 +28,8 @@ class LinearRegression:
     def score(self, X_true, Y_true):
         """Return the R^2 value for the prediction
         R^2 = 1- u/v with:
-        u = ((y_true - y_pred) ** 2).sum()
-        v = ((y_true - y_true.mean()) ** 2).sum()
+        u = ((Y_true - Y_pred) ** 2).sum()
+        v = ((Y_true - Y_true.mean()) ** 2).sum()
         """
         Y_pred = self.predict(X_true)
         u = np.sum((Y_true - Y_pred)**2)

@@ -14,8 +14,8 @@ def test_2d_zero_intercept():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
     Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])[:, np.newaxis]
 
-    model = LinearRegression(X_train, Y_train)
-    model.fit()
+    model = LinearRegression()
+    model.fit(X_train, Y_train)
 
     # test fit
     assert model.coef_[0] == pytest.approx(2)
@@ -32,8 +32,8 @@ def test_2d_nonzero_intercept():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
     Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])[:, np.newaxis]
 
-    model = LinearRegression(X_train, Y_train)
-    model.fit()
+    model = LinearRegression()
+    model.fit(X_train, Y_train)
 
     # test fit
     assert model.coef_[0] == pytest.approx(2)
@@ -46,7 +46,7 @@ def test_2d_nonzero_intercept():
     assert np.all(Y_pred == pytest.approx(Y_test))
 
 
-def test_nd_nonzero_intercept(n_samples=100, dim=4):
+def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     X_train = np.random.uniform(100, size=(n_samples, dim))
     coefs = np.random.uniform(1, 10, size=dim)
     intercept = random.uniform(-10, 10)
@@ -54,8 +54,8 @@ def test_nd_nonzero_intercept(n_samples=100, dim=4):
                       for point in X_train]
     Y_train = np.array(Y_train_values)[:, np.newaxis]
 
-    model = LinearRegression(X_train, Y_train)
-    model.fit()
+    model = LinearRegression()
+    model.fit(X_train, Y_train)
 
     # test fit
     assert model.intercept_ == pytest.approx(intercept, abs=0.2)
@@ -73,4 +73,4 @@ def test_nd_nonzero_intercept(n_samples=100, dim=4):
 # test_2d_zero_intercept()
 # test_2d_nonzero_intercept()
 # test_nd_nonzero_intercept()
-test_nd_nonzero_intercept(n_samples=100000, dim=200)
+test_nd_nonzero_intercept(n_samples=1000, dim=20)
