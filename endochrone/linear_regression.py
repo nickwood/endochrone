@@ -11,13 +11,11 @@ class LinearRegression:
         pass
 
     def fit(self, X_train, Y_train):
-        self.X_train = X_train
-        self.Y_train = Y_train
-        n_samples = self.X_train.shape[0]
-        X = np.c_[np.ones(n_samples), self.X_train]
+        n_samples = X_train.shape[0]
+        X = np.c_[np.ones(n_samples), X_train]
         X_T = X.transpose()
         XTX_inv = np.linalg.inv(X_T@X)
-        beta_vector = (XTX_inv@X_T@self.Y_train)
+        beta_vector = (XTX_inv@X_T@Y_train)
         self.intercept_ = beta_vector[0, 0]
         self.coef_ = beta_vector[1:, 0]
 
