@@ -47,9 +47,9 @@ def test_2d_nonzero_intercept():
 
 
 def test_nd_nonzero_intercept(n_samples=100, dim=4):
-    X_train = np.random.randint(100, size=(n_samples, dim))
-    coefs = np.random.randint(1, 10, size=dim)
-    intercept = random.randint(-10, 10)
+    X_train = np.random.uniform(100, size=(n_samples, dim))
+    coefs = np.random.uniform(1, 10, size=dim)
+    intercept = random.uniform(-10, 10)
     Y_train_values = [sum(point*coefs) + intercept + random.uniform(-0.2, 0.2)
                       for point in X_train]
     Y_train = np.array(Y_train_values)[:, np.newaxis]
@@ -62,7 +62,7 @@ def test_nd_nonzero_intercept(n_samples=100, dim=4):
     assert np.all(model.coef_ == pytest.approx(coefs, abs=0.2))
 
     # test predictions
-    X_test = np.random.randint(100, size=(50, dim))
+    X_test = np.random.uniform(100, size=(50, dim))
     Y_test = np.array([sum(point*coefs) + intercept
                        for point in X_test])[:, np.newaxis]
     Y_pred = model.predict(X_test)
@@ -72,3 +72,4 @@ def test_nd_nonzero_intercept(n_samples=100, dim=4):
 # test_2d_zero_intercept()
 # test_2d_nonzero_intercept()
 # test_nd_nonzero_intercept()
+test_nd_nonzero_intercept(n_samples=100000, dim=200)
