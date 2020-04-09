@@ -3,6 +3,11 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression as skLinearRegression
+from sklearn.pipeline import make_pipeline
+
+
 from endochrone.linear_regression import LinearRegression
 
 __author__ = "nickwood"
@@ -39,44 +44,58 @@ def linear():
     plt.show()
 
 
+def PolynomialRegression(degree=3, **kwargs):
+    return make_pipeline(PolynomialFeatures(degree),
+                         skLinearRegression(**kwargs))
+
+
+def poly_func(X):
+    """This polynomial was chosen because all of its zeroes (-2, 4, 8) lie in
+    the x-range we're looking at, so it is quite wiggly"""
+    return X**3 - 10*X**2 + 8*X + 64
+
+
 def hacky_polynomial():
-    X_show = np.linspace(0, 2.5, 2000)[:, np.newaxis]
-    Y_show = (X_show**10 - 26.9*X_show**9 + 308*X_show**8 - 1972*X_show**7 +
-              7744*X_show**6 - 19152*X_show**5 + 29505*X_show**4 -
-              26928*X_show**3 + 12984*X_show**2 - 2462*X_show - 1.5)
+    """As we only have a single feature, x, we perform polynomial regression by
+    adding features for x^n up to the desired power. It's slightly hacky in
+    that it doesn't give us a nice way to produce predictions other than
+    performing the same power calculations for the x_test features.
+    NB. This starts to diverge from the sklearn version for large powers (~15)
+    I haven't figured out why but I suspect it is to do with f.p. precision"""
+    min_x, max_x = -5, 10
+
+    # Plot the true function with a green line
+    X_show = np.linspace(min_x, max_x, 200)[:, np.newaxis]
+    Y_show = poly_func(X_show)
     plt.plot(X_show, Y_show, color='green')
 
-    n_samples = 2000
-    n_dim = 1
-    X_train = np.random.uniform(0, 2.5, size=(n_samples, n_dim))
-    Y_train_values = (X_train**10 - 26.9*X_train**9 + 308*X_train**8 -
-                      1972*X_train**7 + 7744*X_train**6 - 19152*X_train**5 +
-                      29505*X_train**4 - 26928*X_train**3 + 12984*X_train**2 -
-                      2462*X_train - 1.5)
-    Y_noise = 2*np.random.standard_normal(size=n_samples)[:, np.newaxis]
-    Y_train = Y_train_values + Y_noise
-    plt.scatter(X_train, Y_train, s=1)
+    # Define our training set, we add noise to y_values to make it interesting
+    n_samples = 500
+    X_train = np.random.uniform(min_x, max_x, size=(n_samples, 1))
+    Y_exact = poly_func(X_train)
+    Y_noise = 5 * np.random.standard_normal(size=n_samples)[:, np.newaxis]
+    Y_train = Y_exact + Y_noise
 
-    max_pow = 10
+    max_pow = 16
     powers = np.array(range(1, max_pow + 1))
     X_train_pow = np.power.outer(X_train[:, 0], powers)
-    print(X_train_pow.shape)
 
     # Now train a regression model
     model = LinearRegression()
     model.fit(X_train_pow, Y_train)
-    print(model.coef_)
-    print(model.intercept_)
 
-    # Plot the result
-    X_show_powers = np.power.outer(X_show[:, 0], powers)
-    y_pred = model.predict(X_show_powers)
-    plt.plot(X_show, y_pred, c='red')
+    # compare with SKL
+    skl_model = PolynomialRegression(max_pow)
+    skl_model.fit(X_train, Y_train)
 
-    print(model.score(X_train_pow, Y_train))
-    print(model.score(X_show_powers, Y_show))
+    # Plot the results
+    X_show_pow = np.power.outer(X_show[:, 0], powers)
+    plt.scatter(X_train, Y_train, s=1)
+    plt.plot(X_show, model.predict(X_show_pow), c='red')
+    plt.plot(X_show, skl_model.predict(X_show), c='blue')
+
     plt.show()
 
 
 # linear()
-hacky_polynomial()
+# hacky_polynomial()
