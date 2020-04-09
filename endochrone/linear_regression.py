@@ -14,14 +14,13 @@ class LinearRegression:
         n_samples = X_train.shape[0]
         X = np.c_[np.ones(n_samples), X_train]
         X_T = X.transpose()
-        XTX_inv = np.linalg.inv(X_T@X)
-        beta_vector = (XTX_inv@X_T@Y_train)
+        beta_vector = np.linalg.inv(X_T@X)@X_T@Y_train
         self.intercept_ = beta_vector[0, 0]
         self.coef_ = beta_vector[1:, 0]
 
     def predict(self, X_test):
-        y = [np.sum(point*self.coef_) + self.intercept_ for point in X_test]
-        return np.array(y)[:, np.newaxis]
+        y = np.sum(X_test*self.coef_, axis=1) + self.intercept_
+        return y[:, np.newaxis]
 
     def score(self, X_true, Y_true):
         """Return the R^2 value for the prediction
