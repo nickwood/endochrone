@@ -1,11 +1,6 @@
-from itertools import combinations
-from math import factorial as fac
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
-
-from endochrone import naive_k_means as nkm
-from endochrone import feature_scaling as fs
 
 
 iris = datasets.load_iris()
@@ -14,6 +9,11 @@ axes = iris['feature_names']
 
 
 def iris_k_means():
+    from itertools import combinations
+    from math import factorial as fac
+    from endochrone import naive_k_means as nkm
+    from endochrone import feature_scaling as fs
+
     num_features = iris_data.shape[1]
     num_charts = fac(num_features) // fac(2) // fac(num_features-2)
     plt.figure(facecolor="w", figsize=(15, 10))
@@ -43,7 +43,9 @@ def iris_k_means():
 def iris_naive_knn(n_runs=10):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score
+    from endochrone import feature_scaling as fs
     from endochrone import naive_knn as knn
+
     iris_targets = iris['target'][:, np.newaxis]
     s_iris_data = fs.mean_norm(iris_data)
     accuracy = []
