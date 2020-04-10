@@ -56,5 +56,44 @@ def iris_naive_knn(n_runs=10):
     print("mean accuracy over %s runs is %.4f" % (n_runs, np.mean(accuracy)))
 
 
-iris_naive_knn(n_runs=15)
+def iris_pca():
+    from mpl_toolkits import mplot3d  # noqa: F401
+    from endochrone import feature_scaling as fs
+    from endochrone import pca
+
+    fig = plt.figure(facecolor="w", figsize=(14, 7))
+
+    # first scale features
+    s_iris_data = fs.mean_norm(iris_data)
+    iris_labels = iris['target']
+
+    pcam_2 = pca.PCA(n_components=2)
+    pcam_2.fit(s_iris_data)
+    var_sum_2 = np.abs(np.sum(pcam_2.explained_variance_ratio_))
+    title_2 = '%s components, capturing %.4f%% variation' % (2, var_sum_2*100)
+    red_iris_data_2 = pcam_2.transform(s_iris_data)
+
+    X_2 = red_iris_data_2[:, 0]
+    Y_2 = red_iris_data_2[:, 1]
+    ax_2 = fig.add_subplot(1, 2, 1, title=title_2)
+    ax_2.scatter(X_2, Y_2, c=iris_labels, s=3, marker='d', cmap='cool')
+
+    # Compare to 3 component reduction
+    pcam_3 = pca.PCA(n_components=3)
+    pcam_3.fit(s_iris_data)
+    var_sum_3 = np.abs(np.sum(pcam_3.explained_variance_ratio_))
+    title_3 = '%s components, capturing %.4f%% variation' % (2, var_sum_3*100)
+    red_iris_data_3 = pcam_3.transform(s_iris_data)
+
+    X_3 = red_iris_data_3[:, 0]
+    Y_3 = red_iris_data_3[:, 1]
+    Z_3 = red_iris_data_3[:, 2]
+    ax_3 = fig.add_subplot(1, 2, 2, projection='3d', title=title_3)
+    ax_3.scatter3D(X_3, Y_3, Z_3, c=iris_labels, s=3, marker='d', cmap='cool')
+
+    plt.show()
+
+
 # iris_k_means()
+# iris_naive_knn()
+# iris_pca()
