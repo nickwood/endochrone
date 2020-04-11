@@ -13,14 +13,15 @@ def test_classify():
     X_train = np.transpose([[1, 2, 3, 7, 8, 9, 10],
                             [3, 4, 5, 1, 2, 3, 4],
                             [3, 4, 5, 1, 2, 3, 4]])
-    Y_train = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
+    X_test = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
 
-    data_test = np.transpose([[1, 2.5, 3.5, 8, 8.9, 9.9, 10.2],
-                              [2, 3.1, 4.2, 0.5, 2.1, 2.6, 4],
-                              [2.9, 3.8, 5.2, 0.6, 1.6, 3, 4]])
+    Y_train = np.transpose([[1, 2.5, 3.5, 8, 8.9, 9.9, 10.2],
+                            [2, 3.1, 4.2, 0.5, 2.1, 2.6, 4],
+                            [2.9, 3.8, 5.2, 0.6, 1.6, 3, 4]])
     exp = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
 
-    act = knn.classify(X_train, Y_train, data_test, k=3)
+    act = knn.classify(X_train, X_test, Y_train, k=3)
+    print(act)
     assert np.all(act == exp)
 
 
