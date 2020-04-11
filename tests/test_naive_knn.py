@@ -29,7 +29,7 @@ def test_classify_point():
     X_train = np.transpose([[1, 2, 3, 7, 8, 9, 10],
                             [3, 4, 5, 1, 2, 3, 4],
                             [3, 4, 5, 1, 2, 3, 4]])
-    Y_train = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
+    X_test = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
 
     test_1 = np.array([9, 3, 4])
     test_2 = np.array([3, 5, 5])
@@ -37,7 +37,7 @@ def test_classify_point():
     test_4 = np.array([6, 6, 6])
     test_5 = np.array([8, 1.5, 1.5])
 
-    classifier = partial(knn.classify_point, X_train, Y_train, k=3)
+    classifier = partial(knn.classify_point, X_train, X_test, k=3)
     assert classifier(test_1) == 1
     assert classifier(test_2) == 0
     assert classifier(test_3) == 0
