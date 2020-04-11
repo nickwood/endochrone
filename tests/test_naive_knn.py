@@ -21,7 +21,6 @@ def test_classify():
     exp = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
 
     act = knn.classify(X_train, X_test, Y_train, k=3)
-    print(act)
     assert np.all(act == exp)
 
 
