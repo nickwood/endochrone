@@ -8,10 +8,13 @@ __license__ = "mit"
 
 class PCA:
 
-    def __init__(self, n_components):
+    def __init__(self, n_components=None):
         self.n_components = n_components
 
     def fit(self, X_train):
+        if self.n_components is None:
+            self.n_components == X_train.shape[1]
+
         cov_matrix = np.cov(X_train.transpose())
         eig_vals, eig_vecs = np.linalg.eig(cov_matrix)
         eig_vecs = eig_vecs.transpose()
