@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from endochrone import naive_knn as knn
-from endochrone.metrics import print_confusion_matrix
+from endochrone import metrics
 from endochrone import pca
 
 """ This example uses the MNIST data set to try and classify hand-written
@@ -54,5 +54,8 @@ ypred = knn.classify(pca_Xtrain, Xtest, pca_Ytrain, k=3)
 acc = accuracy_score(Ytest, ypred)*100
 print("cut-off: %s \n n_comp: %s \n accuracy: %0.4f%%" % (cutoff, n_comp, acc))
 
-print_confusion_matrix(ypred, Ytest)
+metrics.print_confusion_matrix(ypred, Ytest)
+print("precision:", metrics.multiclass_precision(Ytest, ypred))
+print("recall:", metrics.multiclass_recall(Ytest, ypred))
+print("f1_score:", metrics.multiclass_f1_score(Ytest, ypred))
 # plt.show()
