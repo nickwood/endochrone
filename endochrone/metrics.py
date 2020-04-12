@@ -29,3 +29,34 @@ def print_confusion_matrix(ytest, ypred):
     fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
     table = [fmt.format(*row) for row in s]
     print('\n'.join(table))
+
+
+def true_positive(ytest, ypred):
+    return np.sum(ytest & ypred) / ytest.shape[0]
+
+
+def false_positive(ytest, ypred):
+    return np.sum(~ytest & ypred) / ytest.shape[0]
+
+
+def true_negative(ytest, ypred):
+    return np.sum(~ytest & ~ypred) / ytest.shape[0]
+
+
+def false_negative(ytest, ypred):
+    return np.sum(ytest & ~ypred) / ytest.shape[0]
+
+
+def precision(ytest, ypred):
+    return true_positive(ytest, ypred) /\
+           (true_positive(ytest, ypred) + false_positive(ytest, ypred))
+
+
+def recall(ytest, ypred):
+    return true_positive(ytest, ypred) /\
+           (true_positive(ytest, ypred) + false_negative(ytest, ypred))
+
+
+def f1_score(ytest, ypred):
+    return (precision(ytest, ypred) * recall(ytest, ypred)) /\
+           (precision(ytest, ypred) + recall(ytest, ypred))

@@ -1,8 +1,12 @@
-PCA
+<!-- k-means
+k-nearest
+regression
+feature scaling
+PCA -->
+metrics - precision, recall & confusion matrix
 MDA
 better k-means
 random forest
-metrics - precision, recall & confusion matrix
 polynomial regression
 Support vector machine
 regularisation

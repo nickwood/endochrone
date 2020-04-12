@@ -33,5 +33,29 @@ def test_large_confusion_matrix():
     assert np.all(counts == e_counts)
 
 
+def test_binary_metrics():
+    ytest = np.transpose([[True, False, True, False, True, False, False, True,
+                           False, False, False, True, False, False, True]])
+    ypred = np.transpose([[False, True, False, False, True, False, True, True,
+                           True, False, True, False, True, False, False]])
+    assert metrics.true_positive(ytest, ypred) == pytest.approx(2/15)
+    assert metrics.false_positive(ytest, ypred) == pytest.approx(5/15)
+    assert metrics.true_negative(ytest, ypred) == pytest.approx(4/15)
+    assert metrics.false_negative(ytest, ypred) == pytest.approx(4/15)
+    assert metrics.precision(ytest, ypred) == pytest.approx(2/7)
+    assert metrics.recall(ytest, ypred) == pytest.approx(2/6)
+    assert metrics.f1_score(ytest, ypred) == pytest.approx(2/13)
+
+
+def test_non_binary_metrics():
+    # y_test = np.transpose([[0, 1, 2, 2, 2, 2, 0, 2, 2, 0, 1, 1, 0, 1, 2, 0]])
+    # y_pred = np.transpose([[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1]])
+    # assert metrics.true_positive(y_test, y_pred) == pytest.approx(11/16)
+    # TODO
+    assert True
+
+
 # test_small_confusion_matrix()
 # test_large_confusion_matrix()
+test_binary_metrics()
+# test_non_binary_metrics()
