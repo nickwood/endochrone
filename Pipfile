@@ -9,7 +9,6 @@ sklearn = "*"
 flake8 = "*"
 matplotlib = "*"
 pytest-cov = "*"
-v = {editable = true,version = "*"}
 
 [packages]
 numpy = "*"

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import datasets
 
+from sklearn import datasets
 
 iris = datasets.load_iris()
 iris_data = np.array(iris['data'])
@@ -94,4 +94,4 @@ def iris_pca():
 
 # iris_k_means()
 # iris_naive_knn()
-iris_pca()
+# iris_pca()

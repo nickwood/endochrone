@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import random
 import pytest
+import random
 
 from endochrone.linear_regression import LinearRegression
 
@@ -73,4 +73,4 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
 # test_2d_zero_intercept()
 # test_2d_nonzero_intercept()
 # test_nd_nonzero_intercept()
-test_nd_nonzero_intercept(n_samples=1000, dim=20)
+# test_nd_nonzero_intercept(n_samples=1000, dim=20)

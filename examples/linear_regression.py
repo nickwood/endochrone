@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
+import matplotlib.pyplot as plt
 import numpy as np
 import random
-import matplotlib.pyplot as plt
 
-from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.pipeline import make_pipeline
-
+from sklearn.preprocessing import PolynomialFeatures
 
 from endochrone.linear_regression import LinearRegression
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 from functools import partial
+import numpy as np
 
 from endochrone import naive_knn as knn
 

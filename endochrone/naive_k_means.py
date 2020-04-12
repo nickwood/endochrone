@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import random
+
 from endochrone.measures import euclidean_dist
 
 __author__ = "nickwood"
