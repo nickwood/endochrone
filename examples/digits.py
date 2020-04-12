@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from endochrone import naive_knn as knn
+from endochrone.metrics import print_confusion_matrix
 from endochrone import pca
 
 """ This example uses the MNIST data set to try and classify hand-written
@@ -38,7 +39,7 @@ Ytest = Ytest[:, np.newaxis]
 # Test run to figure out how many components we should keep
 pcam_test = pca.PCA()
 pcam_test.fit(Xtrain)
-cutoff = 0.90  # i.e. we want to retain this % of variance
+cutoff = 0.97  # i.e. we want to retain this % of variance
 n_comp = np.argmax(np.cumsum(pcam_test.explained_variance_ratio_) > cutoff)
 
 # Now reduce our training set with this PCA model
@@ -52,4 +53,5 @@ ypred = knn.classify(pca_Xtrain, Xtest, pca_Ytrain, k=3)
 acc = accuracy_score(Ytest, ypred)*100
 print("cut-off: %s \n n_comp: %s \n accuracy: %0.4f%%" % (cutoff, n_comp, acc))
 
-# TODO: confusion matrix
+print_confusion_matrix(ypred, Ytest)
+# plt.show()
