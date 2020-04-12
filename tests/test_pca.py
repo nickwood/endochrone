@@ -39,6 +39,27 @@ def test_2d_to_1d():
     assert np.mean(X_transform) == pytest.approx(0)
 
 
+def test_zero_components_specified():
+    min_x, max_x, gradient, intercept, n_samples = 10, 30, 4, 20, 300
+    X_1 = np.random.uniform(min_x, max_x, n_samples)[:, np.newaxis]
+    X_2_exact = gradient * X_1 + intercept
+    flat_noise = np.random.standard_normal(size=(n_samples, 1))
+    X_2_noise = flat_noise * (10 - X_1) * (X_1 - 30) / 40
+    X_2 = X_2_exact + X_2_noise
+    X_train = np.concatenate([X_1, X_2], axis=1)
+
+    pca_model = pca.PCA()
+    pca_model.fit(X_train)
+
+    assert pca_model.n_components_ == 2
+    assert pca_model.n_samples_ == n_samples
+    assert pca_model.n_features_ == 2
+    assert pca_model.explained_variance_.shape == (2,)
+    assert pca_model.explained_variance_ratio_.shape == (2,)
+    assert sum(pca_model.explained_variance_ratio_) == pytest.approx(1)
+    assert pca_model.components_.shape == (2, 2)
+
+
 def test_6d_to_2d():
     n_samples = 300
     min_x, max_x, gradient_1, gradient_2, intercept = 10, 30, 1.5, 0.6, 20
@@ -76,4 +97,5 @@ def test_accuracy_of_inversion():
 
 # test_accuracy_of_inversion()
 # test_6d_to_2d()
+# test_zero_components_specified()
 # test_2d_to_1d()
