@@ -10,8 +10,8 @@ __license__ = "mit"
 
 
 def test_small_confusion_matrix():
-    y_pred = np.transpose([[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1]])
     y_test = np.transpose([[0, 1, 2, 2, 2, 2, 0, 2, 2, 0, 1, 1, 0, 1, 2, 0]])
+    y_pred = np.transpose([[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1]])
     labels, comb, counts = metrics.confusion_matrix(y_test, y_pred)
     assert np.all(labels == np.array([0, 1, 2]))
     e_comb = np.array([[0, 0], [0, 2], [1, 0], [1, 1], [1, 2], [2, 1], [2, 2]])
@@ -21,12 +21,12 @@ def test_small_confusion_matrix():
 
 
 def test_large_confusion_matrix():
-    y_pred = np.transpose([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7,
-                            8, 9, 1, 2, 3, 4, 5, 5, 7, 8, 9, 1, 2, 3, 4, 5, 6,
-                            7, 8, 9, 1, 2, 3, 5, 6, 7, 8, 9, 1, 2, 3, 1, 3]])
     y_test = np.transpose([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 2, 5, 6, 7,
                             8, 9, 1, 2, 5, 4, 5, 5, 7, 8, 9, 1, 2, 3, 4, 5, 6,
                             7, 8, 9, 1, 2, 3, 6, 6, 7, 8, 9, 1, 8, 3, 1, 3]])
+    y_pred = np.transpose([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7,
+                            8, 9, 1, 2, 3, 4, 5, 5, 7, 8, 9, 1, 2, 3, 4, 5, 6,
+                            7, 8, 9, 1, 2, 3, 5, 6, 7, 8, 9, 1, 2, 3, 1, 3]])
     labels, comb, counts = metrics.confusion_matrix(y_test, y_pred)
     assert len(labels) == 10
     assert comb.shape == (14, 2)
