@@ -36,4 +36,4 @@ def test_mean_norm():
     assert np.all(act == pytest.approx(exp))
 
 
-ltr('test_feature_scaling.py')
+ltr()

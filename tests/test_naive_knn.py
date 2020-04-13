@@ -59,4 +59,4 @@ def test_majority_concensus():
     assert knn.majority_concensus(test_5) == 1
 
 
-ltr('test_naive_knn.py')
+ltr()

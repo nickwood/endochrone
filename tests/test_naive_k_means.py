@@ -101,4 +101,4 @@ def test_recalculate_centroids():
     assert np.all(data == np.concatenate([X, Y], axis=1))
 
 
-ltr('test_naive_k_means.py')
+ltr()

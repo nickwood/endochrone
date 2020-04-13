@@ -26,4 +26,4 @@ def test_euclidian_dist():
     assert measures.euclidean_dist(B, E)**2 == pytest.approx(6.73)
 
 
-ltr('test_measures.py')
+ltr()

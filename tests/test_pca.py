@@ -96,4 +96,4 @@ def test_accuracy_of_inversion():
     assert np.all(act == pytest.approx(X_train))
 
 
-ltr('test_pca.py')
+ltr()

@@ -105,4 +105,4 @@ def test_word_labels():
     assert metrics.macro_f1_score == pytest.approx(4147/5184)
 
 
-ltr('test_metrics.py')
+ltr()

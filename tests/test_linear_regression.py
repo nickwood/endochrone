@@ -71,4 +71,4 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     assert model.score(X_test, Y_test) > 0.999
 
 
-ltr('test_linear_regression.py')
+ltr()
