@@ -11,24 +11,34 @@ class Metrics:
     def __init__(self, y_true, y_predicted):
         self.y_true = y_true
         self.y_pred = y_predicted
+        self.samples = np.concatenate([self.y_true, self.y_pred], axis=1)
+        self.labels = np.unique([y_predicted, y_true])
+        self.n_labels = len(self.labels)
+
+    @cached_property
+    def combs(self):
+        return self.confusion_matrix[0]
+
+    @cached_property
+    def counts(self):
+        return self.confusion_matrix[1]
 
     @cached_property
     def confusion_matrix(self):
-        labels = np.unique([self.y_pred, self.y_true])
-        combinations = np.concatenate([self.y_pred, self.y_true], axis=1)
-        combs, counts = np.unique(combinations, axis=0, return_counts=True)
-        return (labels, combs, counts)
+        combs, counts = np.unique(self.samples, axis=0, return_counts=True)
+        return (combs, counts, self.labels)
 
     def print_confusion_matrix(self):
-        labels, comb, counts = self.confusion_matrix
-        N = len(labels)+1
+        N = self.n_labels + 1
         matrix = [[0 for _ in range(N)] for _ in range(N)]
         matrix[0][0] = r'pred\act'
+
         for i in range(0, N-1):
-            matrix[0][i+1] = labels[i]
-            matrix[i+1][0] = labels[i]
-        for idx, (i, j) in enumerate(comb):
-            matrix[i+1][j+1] = counts[idx]
+            matrix[0][i+1] = self.labels[i]
+            matrix[i+1][0] = self.labels[i]
+
+        for idx, (i, j) in enumerate(self.combs):
+            matrix[j+1][i+1] = self.counts[idx]
 
         s = [[str(e) for e in row] for row in matrix]
         lens = [max(map(len, col)) for col in zip(*s)]
@@ -40,19 +50,19 @@ class Metrics:
 class BinaryMetrics(Metrics):
     @cached_property
     def true_positive(self):
-        return np.sum(self.y_true & self.y_pred) / self.y_true.shape[0]
+        return np.mean(self.y_true & self.y_pred)
 
     @cached_property
     def false_positive(self):
-        return np.sum(~self.y_true & self.y_pred) / self.y_true.shape[0]
+        return np.mean(~self.y_true & self.y_pred)
 
     @cached_property
     def true_negative(self):
-        return np.sum(~self.y_true & ~self.y_pred) / self.y_true.shape[0]
+        return np.mean(~self.y_true & ~self.y_pred)
 
     @cached_property
     def false_negative(self):
-        return np.sum(self.y_true & ~self.y_pred) / self.y_true.shape[0]
+        return np.mean(self.y_true & ~self.y_pred)
 
     @cached_property
     def precision(self):
@@ -70,24 +80,35 @@ class BinaryMetrics(Metrics):
 
 class MulticlassMetrics(Metrics):
     @cached_property
+    def n_predicted(self):
+        "return an array containing the number of predictions for each label"
+        return np.array([np.sum([self.counts[i]
+                                 for i, (x, y) in enumerate(self.combs)
+                                 if y == lab])
+                         for lab in self.labels])
+
+    @cached_property
+    def n_true(self):
+        "return an array containing count for each label in 'true' column"
+        return np.array([np.sum([self.counts[i]
+                                 for i, (x, y) in enumerate(self.combs)
+                                 if x == lab])
+                         for lab in self.labels])
+
+    @cached_property
+    def n_true_positive(self):
+        "return the number of true positives for each label"
+        return np.array([self.counts[i]
+                         for i, (x, y) in enumerate(self.combs)
+                         if x == y])
+
+    @cached_property
     def macro_precision(self):
-        labels, combs, counts = self.confusion_matrix
-        N = len(labels)
-        preds = [np.sum([counts[i] for i, (x, y) in enumerate(combs) if x == j])
-                 for j in range(N)]
-        tps = [counts[i] for i, (x, y) in enumerate(combs) if x == y]
-        precisions = np.array(tps) / np.array(preds)
-        return np.mean(precisions)
+        return np.mean(self.n_true_positive / self.n_predicted)
 
     @cached_property
     def macro_recall(self):
-        labels, combs, counts = self.confusion_matrix
-        N = len(labels)
-        acts = [np.sum([counts[i] for i, (x, y) in enumerate(combs) if y == j])
-                for j in range(N)]
-        tps = [counts[i] for i, (x, y) in enumerate(combs) if x == y]
-        recalls = np.array(tps) / np.array(acts)
-        return np.mean(recalls)
+        return np.mean(self.n_true_positive / self.n_true)
 
     @cached_property
     def macro_f1_score(self):
