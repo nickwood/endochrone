@@ -4,6 +4,7 @@ import pytest
 import random
 
 from endochrone import naive_k_means as nkm
+from endochrone.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -100,10 +101,4 @@ def test_recalculate_centroids():
     assert np.all(data == np.concatenate([X, Y], axis=1))
 
 
-# test_forgy_initialisation()
-# test_euclidian_dist()
-# test_nearest_centroid()
-# test_nearest_centroids()
-# test_recalculate_centroids()
-# test_calculate_step()
-# test_calculate()
+ltr('test_naive_k_means.py')

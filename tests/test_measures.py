@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from endochrone import measures
+from endochrone.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -23,3 +24,6 @@ def test_euclidian_dist():
     assert measures.euclidean_dist(B, D)**2 == pytest.approx(10.0)
     assert measures.euclidean_dist(A, D)**2 == pytest.approx(9.0)
     assert measures.euclidean_dist(B, E)**2 == pytest.approx(6.73)
+
+
+ltr('test_measures.py')

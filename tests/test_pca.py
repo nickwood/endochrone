@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from endochrone import pca
+from endochrone.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -95,7 +96,4 @@ def test_accuracy_of_inversion():
     assert np.all(act == pytest.approx(X_train))
 
 
-# test_accuracy_of_inversion()
-# test_6d_to_2d()
-# test_zero_components_specified()
-# test_2d_to_1d()
+ltr('test_pca.py')

@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 
 from endochrone import naive_knn as knn
+from endochrone.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -58,6 +59,4 @@ def test_majority_concensus():
     assert knn.majority_concensus(test_5) == 1
 
 
-test_classify()
-test_classify_point()
-test_majority_concensus()
+ltr('test_naive_knn.py')

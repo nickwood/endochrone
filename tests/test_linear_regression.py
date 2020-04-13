@@ -4,6 +4,7 @@ import pytest
 import random
 
 from endochrone.linear_regression import LinearRegression
+from endochrone.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -70,7 +71,4 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     assert model.score(X_test, Y_test) > 0.999
 
 
-# test_2d_zero_intercept()
-# test_2d_nonzero_intercept()
-# test_nd_nonzero_intercept()
-# test_nd_nonzero_intercept(n_samples=1000, dim=20)
+ltr('test_linear_regression.py')
