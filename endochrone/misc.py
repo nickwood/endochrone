@@ -1,4 +1,4 @@
-def lazy_test_runner(filename=None, verbose=False):
+def lazy_test_runner(filename=None, verbose=False, printstdout=True):
     """Runs a pytest session with the given filename, if not provided it will
     default to the the currently executing __main__ file. This allows us to use
     the right-click -> 'run in terminal' feature of vscode to execute a single
@@ -12,4 +12,6 @@ def lazy_test_runner(filename=None, verbose=False):
     args = ['tests/' + filename]
     if verbose:
         args.append('-v')
+    if printstdout:
+        args.append('-s')
     pytest.main(args)

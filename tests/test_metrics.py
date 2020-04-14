@@ -73,6 +73,9 @@ def test_multiclass_metrics():
     assert metrics.macro_precision == pytest.approx(7/10)
     assert metrics.macro_recall == pytest.approx(99/140)
     assert metrics.macro_f1_score == pytest.approx(693/985)
+    assert metrics.micro_precision == pytest.approx(11/16)
+    assert metrics.micro_recall == pytest.approx(11/16)
+    assert metrics.micro_f1_score == pytest.approx(11/16)
 
 
 def test_char_labels():
@@ -88,6 +91,9 @@ def test_char_labels():
     assert metrics.macro_precision == pytest.approx(233/330)
     assert metrics.macro_recall == pytest.approx(31/45)
     assert metrics.macro_f1_score == pytest.approx(14446/20715)
+    assert metrics.micro_precision == pytest.approx(14/18)
+    assert metrics.micro_recall == pytest.approx(14/18)
+    assert metrics.micro_f1_score == pytest.approx(14/18)
 
 
 def test_word_labels():
@@ -103,6 +109,9 @@ def test_word_labels():
     assert metrics.macro_precision == pytest.approx(29/36)
     assert metrics.macro_recall == pytest.approx(143/180)
     assert metrics.macro_f1_score == pytest.approx(4147/5184)
+    assert metrics.micro_precision == pytest.approx(12/15)
+    assert metrics.micro_recall == pytest.approx(12/15)
+    assert metrics.micro_f1_score == pytest.approx(12/15)
 
 
 ltr()

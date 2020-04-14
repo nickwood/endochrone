@@ -114,3 +114,15 @@ class MulticlassMetrics(Metrics):
     def macro_f1_score(self):
         return 2 * (self.macro_precision * self.macro_recall) /\
                    (self.macro_precision + self.macro_recall)
+
+    @cached_property
+    def micro_precision(self):
+        return np.sum(self.n_true_positive) / np.sum(self.n_predicted)
+
+    @cached_property
+    def micro_recall(self):
+        return self.micro_precision
+
+    @cached_property
+    def micro_f1_score(self):
+        return self.micro_precision
