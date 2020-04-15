@@ -91,16 +91,16 @@ class MulticlassMetrics(Metrics):
         "return an array containing the number of predictions for each label"
         return np.array([np.sum([self.counts[i]
                                  for i, (x, y) in enumerate(self.combs)
-                                 if y == lab])
-                         for lab in self.labels])
+                                 if y == label])
+                         for label in self.labels])
 
     @cached_property
     def n_true(self):
         "return an array containing count for each label in 'true' column"
         return np.array([np.sum([self.counts[i]
                                  for i, (x, y) in enumerate(self.combs)
-                                 if x == lab])
-                         for lab in self.labels])
+                                 if x == label])
+                         for label in self.labels])
 
     @cached_property
     def n_true_positive(self):
