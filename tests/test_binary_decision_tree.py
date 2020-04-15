@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from sklearn.datasets import make_blobs
 
 from endochrone import binary_decision_tree as bdt
 from endochrone.misc import lazy_test_runner as ltr
@@ -123,34 +121,43 @@ def test_best_partition():
                       [3, 4, 5, 1, 2, 3, 4],
                       [3, 1, 5, 1, 2, 3, 4]])
     y = np.array([0, 0, 0, 1, 1, 1, 1])
-    part, i_gain = bdt.best_partition(x[:, 0], y)
+    i_gain, part = bdt.best_partition(x[:, 0], y)
     assert 3 < part < 7
     assert i_gain == pytest.approx(bdt.entropy(y))
 
-    part, i_gain = bdt.best_partition(x[:, 1], y)
+    i_gain, part = bdt.best_partition(x[:, 1], y)
     assert 2 < part < 3
     assert i_gain == pytest.approx(0.2916919971380596)
 
-    part, i_gain = bdt.best_partition(x[:, 2], y)
+    i_gain, part = bdt.best_partition(x[:, 2], y)
     assert 4 < part < 5
     assert i_gain == pytest.approx(0.19811742113040332)
 
 
-def plot_blobs():
-    x, y = make_blobs(n_samples=1500, n_features=2, random_state=123,
-                      cluster_std=2, centers=2)
+def test_simple_fit_and_predict():
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [3, 4, 5, 1, 2, 3, 4],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 0, 0, 1, 1, 1, 1])
 
-    x_0, x_1 = x[:, 0], x[:, 1]
-
-    part_0, i_gain_0 = bdt.best_partition(x_0, y)
-    print(part_0, i_gain_0)
-    part_1, i_gain_1 = bdt.best_partition(x_1, y)
-    print(part_1, i_gain_1)
-    plt.vlines(part_0, -10, 10)
-    plt.hlines(part_1, -10, 10)
-    plt.scatter(x_0, x_1, c=y)
-    plt.show()
+    bdt_test = bdt.BinaryDecisionTree()
+    bdt_test.fit(x, y)
+    x_test = np.transpose([[2, 3, 4.9, 5.0, 5.1, 6, 8, 9],
+                           [1, 2, 3, 4, 5, 6, 7, 8],
+                           [1, 2, 3, 4, 5, 6, 7, 8]])
+    y_test = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+    y_pred = bdt_test.predict(x_test)
+    assert np.all(y_test == y_pred)
 
 
-# plot_blobs()
+def test_max_depth():
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [3, 4, 5, 1, 2, 3, 4],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 1, 0, 1, 0, 1, 0])
+    bdt_test = bdt.BinaryDecisionTree(max_depth=2)
+    bdt_test.fit(x, y)
+    assert bdt_test.right.size == 5
+
+
 ltr()
