@@ -114,4 +114,29 @@ def test_word_labels():
     assert metrics.micro_f1_score == pytest.approx(12/15)
 
 
+def test_row_vectors():
+    ytest = np.array([0, 1, 2, 2, 2, 2, 0, 2, 2, 0, 1, 1, 0, 1, 2, 0])
+    ypred = np.array([0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1])
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert metrics.micro_f1_score == pytest.approx(11/16)
+
+    ytest = np.array(['cat']*5 + ['dog']*4 + ['cow']*6)
+    ypred = np.array(['cat']*4 + ['dog']*4 + ['cat']*2 + ['cow']*5)
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert metrics.macro_precision == pytest.approx(29/36)
+
+    ytest = np.array(['a']*5 + ['b']*4 + ['c']*2 + ['a'] + ['b']*6)
+    ypred = np.array(['a']*4 + ['b']*4 + ['c']*2 + ['a'] + ['b']*7)
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert metrics.macro_f1_score == pytest.approx(14446/20715)
+
+    ytest = np.array([True, False, True, False, True, False, False, True,
+                      False, False, False, True, False, False, True])
+    ypred = np.array([False, True, False, False, True, False, True, True,
+                      True, False, True, False, True, False, False])
+    metrics = BinaryMetrics(ytest, ypred)
+    assert metrics.precision == pytest.approx(2/7)
+    assert metrics.recall == pytest.approx(2/6)
+
+
 ltr()

@@ -7,10 +7,17 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+# TODO should really use 1d version instead of column vector
 class Metrics:
     def __init__(self, y_true, y_predicted):
-        self.y_true = y_true
-        self.y_pred = y_predicted
+        if y_true.ndim == 1:
+            self.y_true = y_true[:, np.newaxis]
+        else:
+            self.y_true = y_true
+        if y_predicted.ndim == 1:
+            self.y_pred = y_predicted[:, np.newaxis]
+        else:
+            self.y_pred = y_predicted
         self.samples = np.concatenate([self.y_true, self.y_pred], axis=1)
         self.labels = np.unique([y_predicted, y_true])
         self.n_labels = len(self.labels)
