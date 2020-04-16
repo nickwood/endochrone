@@ -105,9 +105,10 @@ class MulticlassMetrics(Metrics):
     @cached_property
     def n_true_positive(self):
         "return the number of true positives for each label"
-        return np.array([self.counts[i]
-                         for i, (x, y) in enumerate(self.combs)
-                         if x == y])
+        return np.array([np.sum([self.counts[i]
+                                 for i, (x, y) in enumerate(self.combs)
+                                 if x == y == label])
+                         for label in self.labels])
 
     @cached_property
     def macro_precision(self):

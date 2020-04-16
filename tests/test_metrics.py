@@ -139,4 +139,16 @@ def test_row_vectors():
     assert metrics.recall == pytest.approx(2/6)
 
 
+def test_mismatched_arrays():
+    ytest = np.transpose([['cat']*5 + ['dog']*4 + ['cow']*6])
+    ypred = np.transpose([['cat']*5 + ['dog']*5 + ['cat']*5])
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert np.all(metrics.n_true_positive == [5, 0, 4])
+
+    ytest = np.transpose([[0]*5 + [1]*4 + [2]*6])
+    ypred = np.transpose([[2]*15])
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert np.all(metrics.n_true_positive == [0, 0, 6])
+
+
 ltr()
