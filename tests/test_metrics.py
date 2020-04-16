@@ -151,4 +151,14 @@ def test_mismatched_arrays():
     assert np.all(metrics.n_true_positive == [0, 0, 6])
 
 
+def test_zeros_in_denominator():
+    ytest = np.array(['cat']*5 + ['dog']*4)
+    ypred = np.array(['cow']*9)
+    metrics = MulticlassMetrics(ytest, ypred)
+    assert metrics.macro_precision == 0
+    assert metrics.macro_recall == 0
+    assert metrics.macro_f1_score == 0
+    assert metrics.micro_f1_score == 0
+
+
 ltr()

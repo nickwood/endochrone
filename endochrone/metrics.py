@@ -112,20 +112,26 @@ class MulticlassMetrics(Metrics):
 
     @cached_property
     def macro_precision(self):
-        return np.mean(self.n_true_positive / self.n_predicted)
+        filt = self.n_predicted != 0
+        return np.mean(self.n_true_positive[filt] / self.n_predicted[filt])
 
     @cached_property
     def macro_recall(self):
-        return np.mean(self.n_true_positive / self.n_true)
+        filt = self.n_true != 0
+        return np.mean(self.n_true_positive[filt] / self.n_true[filt])
 
     @cached_property
     def macro_f1_score(self):
+        if self.macro_precision * self.macro_recall == 0:
+            return 0
         return 2 * (self.macro_precision * self.macro_recall) /\
                    (self.macro_precision + self.macro_recall)
 
     @cached_property
     def micro_precision(self):
-        return np.sum(self.n_true_positive) / np.sum(self.n_predicted)
+        filt = self.n_predicted != 0
+        return (np.sum(self.n_true_positive[filt]) /
+                np.sum(self.n_predicted[filt]))
 
     @cached_property
     def micro_recall(self):
