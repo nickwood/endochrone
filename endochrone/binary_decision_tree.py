@@ -28,8 +28,14 @@ class BinaryDecisionTree:
         split = max([(i, best_partition(feature, y))
                      for i, feature in enumerate(x.T)], key=lambda x: x[1][0])
         feat_idx, (_, val) = split
-        self.split_feature = feat_idx
-        self.split_value = val
+
+        if val is None:
+            self.size = len(y)
+            self.result = Counter(y).most_common(1)[0][0]
+            return None
+        else:
+            self.split_feature = feat_idx
+            self.split_value = val
 
         self.left = BinaryDecisionTree(depth=self.depth+1,
                                        max_depth=self.max_depth)
