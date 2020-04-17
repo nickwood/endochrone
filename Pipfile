@@ -4,11 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-sklearn = "*"
 flake8 = "*"
 matplotlib = "*"
+pytest = "*"
 pytest-cov = "*"
+sklearn = "*"
 
 [packages]
 numpy = "*"
