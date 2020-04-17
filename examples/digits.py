@@ -10,6 +10,11 @@ from endochrone import naive_knn as knn
 from endochrone import metrics
 from endochrone import pca
 
+__author__ = "nickwood"
+__copyright__ = "nickwood"
+__license__ = "mit"
+
+
 """ This example uses the MNIST data set to try and classify hand-written
 digits. It does so by first transforming using our PCA algortihm to reduce the
 dimensionality then naive-KNN to classify our test examples. It has an
@@ -38,6 +43,7 @@ Xtest = Xtest[:, np.newaxis]
 Ytest = Ytest[:, np.newaxis]
 
 # Test run to figure out how many components we should keep
+# TODO should be able to do this with a single model
 pcam_test = pca.PCA()
 pcam_test.fit(Xtrain)
 cutoff = 0.97  # i.e. we want to retain this % of variance

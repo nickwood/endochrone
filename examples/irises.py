@@ -3,6 +3,11 @@ import numpy as np
 
 from sklearn import datasets
 
+__author__ = "nickwood"
+__copyright__ = "nickwood"
+__license__ = "mit"
+
+
 iris = datasets.load_iris()
 i_data = np.array(iris['data'])
 i_target = np.array(iris['target'])
