@@ -46,8 +46,9 @@ def test_fit_and_predict():
     assert len(test_rf.trees) == N
 
     y_pred = test_rf.predict(x)
-
     assert np.count_nonzero(y == y_pred) >= 5
+
+# TODO need more comprehensive tests
 
 
 ltr()
