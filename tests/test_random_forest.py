@@ -15,7 +15,7 @@ def test_take_sample():
                       [3, 1, 5, 1, 2, 3, 4]])
     y = np.array([0, 0, 0, 1, 1, 1, 1])
 
-    s3_x, s3_y = rf.take_sample(3, x, y)
+    s3_x, s3_y = rf.take_samples(3, x, y)
     assert s3_x.shape == (3, 3)
     assert s3_y.shape == (3,)
 
@@ -24,7 +24,7 @@ def test_take_sample():
     for point in s3_xy:
         assert point in xy
 
-    s10_x, s10_y = rf.take_sample(10, x, y)
+    s10_x, s10_y = rf.take_samples(10, x, y)
     assert s10_x.shape == (10, 3)
     assert s10_y.shape == (10,)
 
