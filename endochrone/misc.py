@@ -8,6 +8,16 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+def run_once(f):
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run:
+            wrapper.has_run = True
+            return f(*args, **kwargs)
+    wrapper.has_run = False
+    return wrapper
+
+
+@run_once
 def lazy_test_runner(filename=None, verbose=False, printstdout=True):
     """Runs a pytest session with the given filename, if not provided it will
     default to the the currently executing __main__ file. This allows us to use
