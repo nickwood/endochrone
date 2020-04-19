@@ -81,9 +81,9 @@ def partition(x, y, feature_index, split_value):
 
 
 def entropy(y):
-    counts = Counter(y)
-    n_samples = sum(counts.values())
-    p_i = [counts[k]/n_samples for k in counts.keys()]
+    _, counts_y = np.unique(y, return_counts=True)
+    n_samples = np.sum(counts_y)
+    p_i = counts_y / n_samples
     return np.sum(p_i * np.log2(p_i) * -1)
 
 
