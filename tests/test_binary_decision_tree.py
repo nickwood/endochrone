@@ -160,4 +160,16 @@ def test_max_depth():
     assert bdt_test.right.size == 5
 
 
+def test_best_partition_large():
+    import random
+    np.random.seed(seed=123)
+    random.seed(1234)
+    x_feat = np.random.randint(0, 100, 200)
+    y = np.random.randint(0, 3, 200)
+    l_ent, l_split = bdt.best_partition_large(x_feat, y)
+    s_ent, s_split = bdt.best_partition_small(x_feat, y)
+
+    assert l_ent == pytest.approx(s_ent, abs=0.001)
+
+
 ltr()

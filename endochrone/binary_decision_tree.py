@@ -2,6 +2,8 @@
 from collections import Counter
 import numpy as np
 
+from endochrone.discrete_annealing import find_minimum
+
 __author__ = "nickwood"
 __copyright__ = "nickwood"
 __license__ = "mit"
@@ -85,11 +87,15 @@ def entropy(y):
     return np.sum(p_i * np.log2(p_i) * -1)
 
 
-def generate_partitions(x_feat, y):
+def sorted_x_y(x_feat, y):
     ordering = np.argsort(x_feat)
-    sorted_y = (y[ordering])
+    return (x_feat[ordering], y[ordering])
+
+
+def generate_partitions(x_feat, y):
+    sorted_x, sorted_y = sorted_x_y(x_feat, y)
     for i in range(1, len(sorted_y)):
-        if x_feat[ordering[i-1]] != x_feat[ordering[i]]:
+        if sorted_x[i-1] != sorted_x[i]:
             yield sorted_y[:i], sorted_y[i:]
 
 
@@ -100,8 +106,19 @@ def weighted_partition_entropy(p_1, p_2):
 
 def best_partition(x_feat, y):
     """Determine where best to split a single feature in order to maximise the
-    information gain. Returns a tuple (i_gain, division)"""
+    information gain. Returns a tuple (i_gain, division). With a small dataset
+    we brute force, otherwise use simulated annealing"""
+    if len(np.unique(x_feat)) < 100:
+        (spl_entropy, division) = best_partition_small(x_feat, y)
+    else:
+        (spl_entropy, division) = best_partition_large(x_feat, y)
+
     pop_ent = entropy(y)
+    return (pop_ent - spl_entropy, division)
+
+
+def best_partition_small(x_feat, y):
+    """Use brute force to find the best place top split the given feature"""
     min_ent = None
     min_p_1 = None
     for p_1, p_2 in generate_partitions(x_feat, y):
@@ -112,4 +129,20 @@ def best_partition(x_feat, y):
         return (0, None)
     else:
         division = np.mean(x_feat[np.argsort(x_feat)[min_p_1-1:min_p_1+1]])
-        return ((pop_ent - min_ent), division)
+        return (min_ent, division)
+
+
+def best_partition_large(x_feat, y):
+    """Use simulated annealing to find a close to optimum partition"""
+    sorted_x, sorted_y = sorted_x_y(x_feat, y)
+    unique_x, counts_x = np.unique(x_feat, return_counts=True)
+    num_partitions = len(unique_x) - 2
+
+    def f(partition_number):
+        split_point = np.sum(counts_x[:partition_number+1])
+        p_1, p_2 = sorted_y[:split_point], sorted_y[split_point:]
+        return weighted_partition_entropy(p_1, p_2)
+
+    partition_number, min_ent = find_minimum(0, num_partitions, f)
+    x_split = np.mean(unique_x[partition_number:partition_number+2])
+    return (min_ent, x_split)
