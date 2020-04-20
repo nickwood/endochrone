@@ -109,12 +109,15 @@ def best_partition(x_feat, y):
     information gain. Returns a tuple (i_gain, division). With a small dataset
     we brute force, otherwise use simulated annealing"""
     if len(np.unique(x_feat)) < 100:
-        (spl_entropy, division) = best_partition_small(x_feat, y)
+        (split_entropy, division) = best_partition_small(x_feat, y)
     else:
-        (spl_entropy, division) = best_partition_large(x_feat, y)
+        (split_entropy, division) = best_partition_large(x_feat, y)
 
-    pop_ent = entropy(y)
-    return (pop_ent - spl_entropy, division)
+    if division is None:
+        return (0, None)
+    else:
+        pop_ent = entropy(y)
+        return (pop_ent - split_entropy, division)
 
 
 def best_partition_small(x_feat, y):

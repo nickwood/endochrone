@@ -172,4 +172,15 @@ def test_best_partition_large():
     assert l_ent == pytest.approx(s_ent, abs=0.001)
 
 
+def test_unsplittable_feature():
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [2, 2, 2, 2, 2, 2, 2],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 1, 0, 1, 0, 1, 0])
+    bdt_test = bdt.BinaryDecisionTree(max_depth=3)
+    bdt_test.fit(x, y)
+    assert bdt_test.right is not None
+    assert bdt_test.left is not None
+
+
 ltr()
