@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from collections import Counter
 import numpy as np
-import random
+import time
 
 from endochrone.binary_decision_tree import BinaryDecisionTree
 
@@ -19,7 +18,7 @@ class RandomForest:
         self.max_tree_depth = max_tree_depth
         self.trees = []
 
-    def fit(self, x, y):
+    def fit(self, x, y, debug=False):
         n_samples = x.shape[0]
         if self.samp_per_tree is None:
             self.samp_per_tree = int(2 * n_samples / self.n_trees)
@@ -28,12 +27,16 @@ class RandomForest:
                       for i in range(self.n_trees)]
 
         for tree in self.trees:
+            t0 = time.process_time()
             if self.feat_per_tree is None:
                 x_feat = x
             else:
                 x_feat = take_features(self.feat_per_tree, x, y)
             x_samp, y_samp = take_samples(self.samp_per_tree, x_feat, y)
             tree.fit(x_samp, y_samp)
+            t1 = time.process_time()
+            if debug:
+                print("tree fitted in %.06f seconds" % (t1-t0))
         return self
 
     def predict(self, x):
@@ -42,16 +45,18 @@ class RandomForest:
 
 
 def consensus(votes):
-    return Counter(votes).most_common(1)[0][0]
-# TODO: something like :np.apply_along_axis(lambda x: np.bincount(x).argmax(),
-# axis=0, arr=A)
+    votes, counts = np.unique(votes, return_counts=True)
+    return votes[np.argmax(counts)]
 
 
 def take_samples(sample_size, x, y):
-    sample_indexes = random.choices(range(len(x)), k=sample_size)
+    sample_indexes = np.random.choice(range(len(x)), sample_size)
     return x[sample_indexes], y[sample_indexes]
 
 
 def take_features(n_features, x, y):
-    sample_features = random.choices(range(len(x[0])), k=n_features)
+    if n_features > x.shape[1]:
+        raise ValueError("More features specified than available")
+    sample_features = np.random.choice(range(len(x[0])), n_features,
+                                       replace=False)
     return x[:, sample_features]
