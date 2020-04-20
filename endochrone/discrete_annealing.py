@@ -53,7 +53,8 @@ def transition(f_old, f_new, temp):
     in the range [0,1] which asymptotically approaches 0."""
     if f_new < f_old:
         return True
-    if random.uniform(0, 1) < exp(-(f_new - f_old)/(f_old * temp)):
+    # TODO: catch div by 0
+    if temp != 0 and random.uniform(0, 1) < exp(-(f_new - f_old)/(temp)):
         return True
     else:
         return False
