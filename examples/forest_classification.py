@@ -1,6 +1,8 @@
 import numpy as np
-from sklearn.datasets import fetch_covtype
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from sklearn.datasets import fetch_covtype
 from sklearn.model_selection import train_test_split
 import time
 
@@ -18,9 +20,9 @@ x = source_dict['data']
 y = source_dict['target']
 
 # Changing this to False wil run for the entire ~500k dataset
-test_fit = False
+test_fit = True
 if test_fit:
-    sub_size = 1000
+    sub_size = 10000
     np.random.seed(seed=1234)
     indexes = np.random.choice(range(0, x.shape[0]), sub_size, replace=False)
     x = x[indexes, :]
@@ -52,6 +54,32 @@ def without_pca():
     print('macro_recall', metrics.macro_recall)
     print('macro_f1', metrics.macro_f1_score)
     print('micro_f1', metrics.micro_f1_score)
+
+
+def pca_and_pair_plot():
+    from endochrone import feature_scaling as fs
+    from endochrone.pca import PCA
+
+    global x
+    if test_fit:
+        # TODO: make this part of PCA
+        # We need to remove features with no variation, otherwise scaling & PCA
+        # will fail
+        features_to_keep = [i for i, feat in enumerate(x.T)
+                            if len(np.unique(feat)) > 1]
+        x = x[:, features_to_keep]
+
+    # first we rescale to stop large floats dominating categories
+    scaled_x = fs.mean_norm(x)
+
+    N = 3
+    pcam_min = PCA(n_components=N)
+    pcam_min.fit(scaled_x)
+    pca_x = pcam_min.transform(scaled_x)
+    labels = (list(range(N)) + ['species'])
+    df = pd.DataFrame(np.hstack([pca_x, y[:, np.newaxis]]), columns=labels)
+    sns.pairplot(df, hue='species', size=1.5)
+    plt.show()
 
 
 def with_pca():
@@ -147,5 +175,6 @@ def visualise_entropies():
 
 
 # without_pca()
-with_pca()
+pca_and_pair_plot()
+# with_pca()
 # visualise_entropies()
