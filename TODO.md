@@ -4,15 +4,18 @@
 <!-- feature scaling -->
 <!-- PCA -->
 <!-- metrics - precision, recall & confusion matrix -->
-binary decsion tree
-random forest
+<!-- binary decsion tree -->
+<!-- random forest -->
+
+logistic regression
+naive bayes
+regularisation
+polynomial regression
 gradient descent
 kernel pca
 better k-means
-regularisation
-polynomial regression
 Support vector machine
-naive bayes
-logistic regression
 isomap
 adaboost
+gaussian discriminant analysis
+backprop
