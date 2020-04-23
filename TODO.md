@@ -8,6 +8,7 @@
 <!-- random forest -->
 
 logistic regression
+gaussian discriminant analysis
 naive bayes
 regularisation
 polynomial regression
@@ -17,5 +18,5 @@ better k-means
 Support vector machine
 isomap
 adaboost
-gaussian discriminant analysis
 backprop
+softmax
