@@ -6,7 +6,8 @@
 <!-- metrics - precision, recall & confusion matrix -->
 <!-- binary decsion tree -->
 <!-- random forest -->
-
+ACF & PACF
+ARIMA
 logistic regression
 gaussian discriminant analysis
 naive bayes
@@ -15,7 +16,7 @@ polynomial regression
 gradient descent
 kernel pca
 better k-means
-Support vector machine
+Support vector machine 
 isomap
 adaboost
 backprop
