@@ -71,4 +71,39 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     assert model.score(X_test, Y_test) > 0.999
 
 
+def test_1d_vectors():
+    X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
+
+    model = LinearRegression()
+    model.fit(X_train, Y_train)
+
+    assert model.coef_[0] == pytest.approx(2)
+    assert model.intercept_ == pytest.approx(1)
+
+    # test predictions
+    X_test = np.array([1.5, 2.5, 3.5, 7.5])
+    Y_test = np.array([4, 6, 8, 16])
+    Y_pred = model.predict(X_test)
+    assert np.all(Y_pred == pytest.approx(Y_test))
+
+
+def test_2dimx_1dimy():
+    X_train = np.transpose([[1, 2, 3, 4, 5, 6, 7, 8, 9],
+                            [1, 2, 3, 4, 6, 5, 7, 8, 9]])
+    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
+
+    model = LinearRegression()
+    model.fit(X_train, Y_train)
+
+    assert model.coef_[0] == pytest.approx(2)
+    assert model.intercept_ == pytest.approx(1)
+
+    # test predictions
+    X_test = np.transpose([[1.5, 2.5, 3.5, 7.5], [1.5, 2.5, 3.5, 7.5]])
+    Y_test = np.array([4, 6, 8, 16])
+    Y_pred = model.predict(X_test)
+    assert np.all(Y_pred == pytest.approx(Y_test))
+
+
 ltr()
