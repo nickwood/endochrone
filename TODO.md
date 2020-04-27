@@ -1,23 +1,55 @@
+Time Series
+-----------
+<!-- ACF  -->
+<!-- PACF -->
+ARIMA
+ACF with FFT
+
+
+classification
+--------------
 <!-- k-means -->
 <!-- k-nearest -->
-<!-- regression -->
-<!-- feature scaling -->
-<!-- PCA -->
-<!-- metrics - precision, recall & confusion matrix -->
-<!-- binary decsion tree -->
+<!-- binary decision tree -->
 <!-- random forest -->
-ACF & PACF
-ARIMA
-logistic regression
 gaussian discriminant analysis
 naive bayes
-regularisation
-polynomial regression
-gradient descent
+single/multilayer perceptron
+adaboost
+improve k-means
+improve knn - tomek links & consistent subsets...
+
+
+Transformation/Dimension reduction
+---------------------------------
+<!-- feature scaling -->
+<!-- PCA -->
 kernel pca
-better k-means
 Support vector machine 
 isomap
-adaboost
+
+
+Optimisation
+------------
+regularisation
+gradient descent
+XGBoost
+
+
+Performance Measurment
+---------------------
+<!-- metrics - precision, recall & confusion matrix -->
+Other performance measures? MSE etc?
+
+
+Regression
+----------
+<!-- linear regression -->
+polynomial regression
+logistic regression
+
+
+Deep learning
+------------
 backprop
 softmax
