@@ -35,16 +35,15 @@ class LinearRegression:
         self.coef_ = beta_vector[1:, 0]
         if self.calculate_residuals:
             # TODO: Add tests for this
-            # print(self.predict(X_train))
             self.residuals_ = Y_train - self.predict(X_train)
         else:
             self.residuals_ = None
 
     def predict(self, X_test):
         if X_test.ndim == 1:
-            y = X_test*self.coef_ + self.intercept_
+            y = X_test * self.coef_ + self.intercept_
         else:
-            y = np.sum(X_test*self.coef_, axis=1) + self.intercept_
+            y = np.sum(X_test * self.coef_, axis=1) + self.intercept_
 
         if self.predict_column_vectors:
             return y[:, np.newaxis]
