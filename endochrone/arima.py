@@ -47,9 +47,9 @@ class MaModel:
     def residuals(self, x, coefs):
         res = []
         for t in range(0, len(x)):
-            num_errors = min(t, self.order)
+            N = min(t, self.order)
             centre = x[t] - coefs[0]
-            adj = np.sum([coefs[s+1]*res[t-s-1] for s in range(num_errors)])
+            adj = np.sum([coefs[s+1]*res[t-s-1] for s in range(N)])
             res.append(centre - adj)
         return res
 
@@ -67,4 +67,18 @@ class MaModel:
         self.residuals_ = optimum.fun
         return optimum.success
 
-    # def predict
+    def predict(self, y):
+        if len(y) < self.order:
+            raise ValueError("Insufficient values provided")
+        preds = []
+        errs = []
+        for t in range(0, len(y) + self.order):
+            N = min(t, self.order)
+            adj = np.sum([self.thetas_[s+1]*errs[t-s-1] for s in range(N)])
+            prediction = self.thetas_[0] - adj
+            preds.append(prediction)
+            if t < len(y):
+                errs.append(prediction-y[t])
+            else:
+                errs.append(0)
+        return preds[self.order:]

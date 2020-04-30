@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from functools import lru_cache
 import numpy as np
 import pytest
 
@@ -62,12 +61,15 @@ def test_ma1_model():
 
     residuals = MA1.residuals(x, [np.mean(x), 0.5])
     exp_res = [-1.0, 0.5, 0.75, 1.625, 0.1875, -0.09375, -0.953125, -1.5234375]
-    print(residuals)
     assert np.all(residuals == pytest.approx(exp_res))
 
     assert MA1.fit(x)
     exp_thetas = [9.6237, 0.7531]
     assert np.all(MA1.thetas_ == pytest.approx(exp_thetas, abs=0.0001))
+
+    preds = MA1.predict([10, 11, 9, 10, 12])
+    exp = [9.90709153, 10.44676937, 8.534137988, 10.72764068, 10.5819138]
+    assert np.all(preds == pytest.approx(exp, abs=0.001))
 
 
 def test_ma2_model():
@@ -82,6 +84,10 @@ def test_ma2_model():
     assert np.sum(MA2.residuals_**2) == pytest.approx(1.7175879816717088)
     exp_thetas = [8.86689311, 1.38181157, 1.98175309]
     assert np.all(MA2.thetas_ == pytest.approx(exp_thetas))
+
+    preds = MA2.predict([10, 11, 9, 10, 12])
+    exp = [11.89642503, 5.988960158, 8.669395113, 21.41805208, 15.46732964]
+    assert np.all(preds == pytest.approx(exp, abs=0.001))
 
 
 ltr()
