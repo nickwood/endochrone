@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from functools import lru_cache
 import numpy as np
 import pytest
 
@@ -58,9 +59,29 @@ def test_ar2_model():
 def test_ma1_model():
     x = np.array([9, 10, 11, 12, 11, 10, 9, 8])
     MA1 = arima.MaModel(order=1)
-    MA1.fit(x)
+
+    residuals = MA1.residuals(x, [np.mean(x), 0.5])
+    exp_res = [-1.0, 0.5, 0.75, 1.625, 0.1875, -0.09375, -0.953125, -1.5234375]
+    print(residuals)
+    assert np.all(residuals == pytest.approx(exp_res))
+
+    assert MA1.fit(x)
     exp_thetas = [9.6237, 0.7531]
     assert np.all(MA1.thetas_ == pytest.approx(exp_thetas, abs=0.0001))
+
+
+def test_ma2_model():
+    x = np.array([9, 10, 11, 12, 11, 10, 9, 8])
+    MA2 = arima.MaModel(order=2)
+
+    residuals = MA2.residuals(x, [np.mean(x), 0.5, 0.5])
+    exp_res = [-1.0, 0.5, 1.25, 1.125, -0.1875, -0.46875, -0.671875, -1.429688]
+    assert np.all(residuals == pytest.approx(exp_res))
+
+    assert MA2.fit(x)
+    assert np.sum(MA2.residuals_**2) == pytest.approx(1.7175879816717088)
+    exp_thetas = [8.86689311, 1.38181157, 1.98175309]
+    assert np.all(MA2.thetas_ == pytest.approx(exp_thetas))
 
 
 ltr()

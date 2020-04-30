@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from functools import partial
 import numpy as np
 
 from endochrone.linear_regression import LinearRegression
@@ -41,28 +42,29 @@ class ArModel(LinearRegression):
 
 class MaModel:
     def __init__(self, order=1):
-        if order > 1:
-            raise NotImplementedError("Only supports order 1 currently")
         self.order = order
 
-    def residuals(self, coefs):
-        res = [self.x[0] - coefs[0]]
-        for t in range(self.order, len(self.x)):
-            res.append((self.x[t] - coefs[0] - coefs[1]*res[t-1]))
-        res = np.array(res)
-
+    def residuals(self, x, coefs):
+        res = []
+        for t in range(0, len(x)):
+            num_errors = min(t, self.order)
+            centre = x[t] - coefs[0]
+            adj = np.sum([coefs[s+1]*res[t-s-1] for s in range(num_errors)])
+            res.append(centre - adj)
         return res
 
     def fit(self, x):
-        self.x = x
         # iniitalise guesses for mu and thetas
         initial = np.array([np.mean(x)] + [0.5]*self.order)
 
         # TODO write our own least squares module
         from scipy.optimize import least_squares
         optim_kwds = dict(ftol=1e-10)
-        optimum = least_squares(self.residuals, initial, **optim_kwds)
+        err_func = partial(self.residuals, x)
+        optimum = least_squares(err_func, initial, **optim_kwds)
 
         self.thetas_ = optimum.x
         self.residuals_ = optimum.fun
-        print(optimum)
+        return optimum.success
+
+    # def predict
