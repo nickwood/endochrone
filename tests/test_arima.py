@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from functools import lru_cache
 import numpy as np
 import pytest
 
@@ -54,6 +53,14 @@ def test_ar2_model():
     x_to_pred = np.array([4, 8, 12, 24])
     y_exp = np.array([12, 20, 36])
     assert np.all(AR2.predict(x_to_pred) == pytest.approx(y_exp, abs=0.005))
+
+
+def test_ma1_model():
+    x = np.array([9, 10, 11, 12, 11, 10, 9, 8])
+    MA1 = arima.MaModel(order=1)
+    MA1.fit(x)
+    exp_thetas = [9.6237, 0.7531]
+    assert np.all(MA1.thetas_ == pytest.approx(exp_thetas, abs=0.0001))
 
 
 ltr()
