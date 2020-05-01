@@ -17,6 +17,7 @@ class LinearRegression:
         self.calculate_residuals = calculate_residuals
         self.predict_column_vectors = predict_column_vectors
 
+    # TODO: refactor to use standalone least_squares module
     def fit(self, X_train, Y_train):
         n_samples = X_train.shape[0]
         X = np.c_[np.ones(n_samples), X_train]

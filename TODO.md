@@ -2,8 +2,12 @@ Time Series
 -----------
 <!-- ACF  -->
 <!-- PACF -->
+<!-- AR Model -->
+<!-- MA Model -->
+ARMA Model
 ARIMA
 ACF with FFT
+Causal inference
 
 
 classification
@@ -34,6 +38,7 @@ isomap
 
 Optimisation
 ------------
+least squares
 regularisation
 gradient descent
 XGBoost
@@ -63,3 +68,7 @@ LSTM
 backprop
 CNN
 softmax
+
+
+Genetic Algorithms
+-----------------
