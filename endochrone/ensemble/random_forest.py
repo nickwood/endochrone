@@ -2,7 +2,7 @@
 import numpy as np
 import time
 
-from endochrone.binary_decision_tree import BinaryDecisionTree
+from endochrone.classification.binary_decision_tree import BinaryDecisionTree
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

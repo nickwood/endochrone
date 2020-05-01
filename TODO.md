@@ -16,14 +16,15 @@ classification
 <!-- k-nearest -->
 <!-- binary decision tree -->
 <!-- random forest -->
+improve knn - tomek links & consistent subsets... - quick
 gaussian discriminant analysis
 weighted knn
 naive bayes
-single/multilayer perceptron 
-pereceptron w/ WINNOW
+perceptron w/ WINNOW
+single layer perceptron
+multilayer perceptron
 adaboost
 improve k-means
-improve knn - tomek links & consistent subsets...
 
 
 Transformation/Dimension reduction
@@ -31,8 +32,10 @@ Transformation/Dimension reduction
 <!-- feature scaling -->
 <!-- PCA -->
 kernel pca
+z-value feature scaling - quick
+Factor analysis
 atribute selection
-Support vector machine 
+Support vector machine
 isomap
 
 
@@ -49,8 +52,8 @@ Ensemble Techniques
 Subsampling
 x-fold crossvalidation
 
-Performance Measurment
----------------------
+Performance Measures
+--------------------
 <!-- metrics - precision, recall & confusion matrix -->
 Other performance measures? MSE etc? gmean
 
@@ -58,12 +61,13 @@ Other performance measures? MSE etc? gmean
 Regression
 ----------
 <!-- linear regression -->
+ridge regression
 polynomial regression
 logistic regression
 
 
 Deep learning
-------------
+-------------
 LSTM
 backprop
 CNN

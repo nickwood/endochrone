@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 
-from endochrone.binary_decision_tree import BinaryDecisionTree
+from endochrone.classification.binary_decision_tree import BinaryDecisionTree
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

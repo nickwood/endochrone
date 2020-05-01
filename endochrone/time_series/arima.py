@@ -2,7 +2,7 @@
 from functools import partial
 import numpy as np
 
-from endochrone.linear_regression import LinearRegression
+from endochrone.regression.linear_regression import LinearRegression
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

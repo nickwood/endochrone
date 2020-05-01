@@ -2,7 +2,7 @@
 from collections import Counter
 import numpy as np
 
-from endochrone.discrete_annealing import find_minimum
+from endochrone.optimisation.discrete_annealing import find_minimum
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

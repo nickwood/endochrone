@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
-from endochrone.linear_regression import LinearRegression
+from endochrone.regression.linear_regression import LinearRegression
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -16,31 +16,32 @@ __license__ = "mit"
 
 def linear():
     # First invent some data
-    n_samples = 1000
+    n_samples = 300
     n_dim = 1
-    X_train = np.random.uniform(1000, size=(n_samples, n_dim))
+    x_max = 100
+    X_train = np.random.uniform(x_max, size=(n_samples, n_dim))
     coefs = np.random.uniform(1, 10, size=n_dim)
-    intercept = random.uniform(-100, 100)
-    Y_train_values = [sum(point*coefs)*random.uniform(0.9, 1.1) +
-                      intercept*random.uniform(0.9, 1.1)
-                      for point in X_train]
-    Y_train = np.array(Y_train_values)[:, np.newaxis]
+    intercept = random.uniform(0, 100)
+    noise = np.sqrt(x_max) * np.random.standard_normal(size=(n_samples, 1))
+    Y_mult = np.sum(X_train*coefs, axis=1)[:, np.newaxis]
 
-    # Plot our samples
-    plt.figure(facecolor="w", figsize=(15, 10))
-    plt.scatter(X_train, Y_train, s=1)
+    Y_train = Y_mult + intercept + noise
 
     # Now train a regression model
     model = LinearRegression()
     model.fit(X_train, Y_train)
 
     # Add line of best fit to graph
-    X_fit = np.linspace(0, 1000, 20)[:, np.newaxis]
+    X_fit = np.linspace(0, x_max, 20)[:, np.newaxis]
     Y_fit = model.predict(X_fit)
-    plt.plot(X_fit, Y_fit, color='green')
 
     print(model.score(X_train, Y_train))
-    plt.show()
+    # if we're in 1 dimension we can plot this
+    if n_dim == 1:
+        plt.figure(facecolor="w", figsize=(15, 10))
+        plt.scatter(X_train, Y_train, s=1)
+        plt.plot(X_fit, Y_fit, color='green')
+        plt.show()
 
 
 def PolynomialRegression(degree=3, **kwargs):
@@ -96,5 +97,5 @@ def hacky_polynomial():
     plt.show()
 
 
-# linear()
+linear()
 # hacky_polynomial()

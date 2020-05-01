@@ -28,8 +28,8 @@ def lazy_test_runner(filename=None, verbose=False, printstdout=True):
     import __main__
 
     if filename is None:
-        filename = os.path.basename(__main__.__file__)
-    args = ['tests/' + filename]
+        filename = os.path.abspath(__main__.__file__)
+    args = [filename[filename.find('tests'):]]
     if verbose:
         args.append('-v')
     if printstdout:

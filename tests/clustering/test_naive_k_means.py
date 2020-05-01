@@ -3,8 +3,8 @@ import numpy as np
 import pytest
 import random
 
-from endochrone import naive_k_means as nkm
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.clustering import naive_k_means as nkm
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

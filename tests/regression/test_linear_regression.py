@@ -3,8 +3,8 @@ import numpy as np
 import pytest
 import random
 
-from endochrone.linear_regression import LinearRegression
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.regression.linear_regression import LinearRegression
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

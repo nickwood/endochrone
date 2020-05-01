@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 
-from endochrone import binary_decision_tree as bdt
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.classification import binary_decision_tree as bdt
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

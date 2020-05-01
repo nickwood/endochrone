@@ -2,8 +2,8 @@
 import json
 import numpy as np
 
-from endochrone import discrete_annealing as da
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.optimisation import discrete_annealing as da
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

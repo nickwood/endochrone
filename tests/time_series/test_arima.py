@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 
-from endochrone.misc import lazy_test_runner as ltr
-import endochrone.arima as arima
+from endochrone.utils.misc import lazy_test_runner as ltr
+import endochrone.time_series.arima as arima
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

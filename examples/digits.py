@@ -6,9 +6,9 @@ from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from endochrone import naive_knn as knn
-from endochrone import metrics
-from endochrone import pca
+from endochrone.classification import naive_knn as knn
+from endochrone.stats import metrics
+from endochrone.decomposition import pca
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -60,8 +60,8 @@ ypred = knn.classify(pca_Xtrain, Xtest, pca_Ytrain, k=3)
 acc = accuracy_score(Ytest, ypred)*100
 print("cut-off: %s \n n_comp: %s \n accuracy: %0.4f%%" % (cutoff, n_comp, acc))
 
-metrics.print_confusion_matrix(ypred, Ytest)
-print("precision:", metrics.multiclass_precision(Ytest, ypred))
-print("recall:", metrics.multiclass_recall(Ytest, ypred))
-print("f1_score:", metrics.multiclass_f1_score(Ytest, ypred))
-# plt.show()
+perf = metrics.MulticlassMetrics(Ytest, ypred)
+perf.print_confusion_matrix()
+print("macro precision:", perf.macro_precision)
+print("macro recall:", perf.macro_recall)
+print("macro f1_score:", perf.macro_f1_score)

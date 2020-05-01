@@ -2,9 +2,9 @@
 import numpy as np
 import pytest
 
-from endochrone.metrics import BinaryMetrics
-from endochrone.metrics import MulticlassMetrics
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.stats.metrics import BinaryMetrics
+from endochrone.stats.metrics import MulticlassMetrics
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 
-from endochrone import feature_scaling as fs
-from endochrone.misc import lazy_test_runner as ltr
+from endochrone.stats import feature_scaling as fs
+from endochrone.utils.misc import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

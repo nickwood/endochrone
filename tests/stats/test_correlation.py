@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 
-from endochrone.misc import lazy_test_runner as ltr
-from endochrone import correlation
+from endochrone.utils.misc import lazy_test_runner as ltr
+from endochrone.stats import correlation
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

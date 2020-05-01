@@ -49,8 +49,8 @@ def iris_k_means():
 def iris_naive_knn(n_runs=10):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score
-    from endochrone import feature_scaling as fs
-    from endochrone import naive_knn as knn
+    from endochrone.stats import feature_scaling as fs
+    from endochrone.classification import naive_knn as knn
 
     s_i_data = fs.mean_norm(i_data)
     accuracy = []
@@ -65,7 +65,7 @@ def iris_naive_knn(n_runs=10):
 
 def iris_pca():
     from mpl_toolkits import mplot3d  # noqa: F401
-    from endochrone import pca
+    from endochrone.decomposition import pca
 
     fig = plt.figure(facecolor="w", figsize=(14, 7))
     i_target = iris['target']
@@ -99,8 +99,9 @@ def iris_pca():
 
 def iris_bdt():
     from sklearn.model_selection import train_test_split
-    from endochrone.binary_decision_tree import BinaryDecisionTree
-    from endochrone.metrics import MulticlassMetrics
+    from endochrone.classification.binary_decision_tree\
+        import BinaryDecisionTree
+    from endochrone.stats.metrics import MulticlassMetrics
 
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(i_data, i_target)
     i_bdt = BinaryDecisionTree(max_depth=4)

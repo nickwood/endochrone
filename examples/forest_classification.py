@@ -6,9 +6,9 @@ from sklearn.datasets import fetch_covtype
 from sklearn.model_selection import train_test_split
 import time
 
-from endochrone.random_forest import RandomForest
-from endochrone import binary_decision_tree as bdt
-from endochrone.metrics import MulticlassMetrics as mcm
+from endochrone.ensemble.random_forest import RandomForest
+from endochrone.classification import binary_decision_tree as bdt
+from endochrone.stats.metrics import MulticlassMetrics as mcm
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -22,7 +22,7 @@ y = source_dict['target']
 # Changing this to False wil run for the entire ~500k dataset
 test_fit = True
 if test_fit:
-    sub_size = 10000
+    sub_size = 100
     np.random.seed(seed=1234)
     indexes = np.random.choice(range(0, x.shape[0]), sub_size, replace=False)
     x = x[indexes, :]
@@ -57,8 +57,8 @@ def without_pca():
 
 
 def pca_and_pair_plot():
-    from endochrone import feature_scaling as fs
-    from endochrone.pca import PCA
+    from endochrone.stats import feature_scaling as fs
+    from endochrone.decomposition.pca import PCA
 
     global x
     if test_fit:
@@ -83,8 +83,8 @@ def pca_and_pair_plot():
 
 
 def with_pca():
-    from endochrone import feature_scaling as fs
-    from endochrone.pca import PCA
+    from endochrone.stats import feature_scaling as fs
+    from endochrone.decomposition.pca import PCA
 
     global x
     if test_fit:
@@ -175,6 +175,6 @@ def visualise_entropies():
 
 
 # without_pca()
-pca_and_pair_plot()
-# with_pca()
+# pca_and_pair_plot()
+with_pca()
 # visualise_entropies()

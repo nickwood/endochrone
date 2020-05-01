@@ -2,7 +2,7 @@
 import numpy as np
 import random
 
-from endochrone.measures import euclidean_dist
+from endochrone.stats.measures import euclidean_dist
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
