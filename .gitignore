@@ -50,3 +50,4 @@ MANIFEST
 .venv*/
 .vscode/
 .templates/
+template.config.js
