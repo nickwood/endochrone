@@ -11,6 +11,7 @@ pytest-cov = "*"
 sklearn = "*"
 seaborn = "*"
 statsmodels = "*"
+jupyterlab = "*"
 
 [packages]
 numpy = "*"
