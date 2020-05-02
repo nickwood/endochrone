@@ -12,6 +12,7 @@ sklearn = "*"
 seaborn = "*"
 statsmodels = "*"
 jupyterlab = "*"
+rope = "*"
 
 [packages]
 numpy = "*"

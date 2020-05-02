@@ -16,28 +16,33 @@ classification
 <!-- k-nearest -->
 <!-- binary decision tree -->
 <!-- random forest -->
+naive bayes
 improve knn - tomek links & consistent subsets... - quick
 gaussian discriminant analysis
 weighted knn
-naive bayes
 perceptron w/ WINNOW
 single layer perceptron
 multilayer perceptron
 adaboost
-improve k-means
 
+Clustering
+---------
+improve k-means
 
 Transformation/Dimension reduction
 ---------------------------------
 <!-- feature scaling -->
 <!-- PCA -->
 kernel pca
-z-value feature scaling - quick
+<!-- z-value feature scaling -->
 Factor analysis
 atribute selection
 Support vector machine
 isomap
 
+stats
+-----
+Kolmogorov-Smirnov
 
 Optimisation
 ------------
