@@ -106,4 +106,16 @@ def test_2dimx_1dimy():
     assert np.all(Y_pred == pytest.approx(Y_test))
 
 
+def test_predict_column_vectors():
+    X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])
+
+    model = LinearRegression(predict_vectors=True)
+    model.fit(X_train, Y_train)
+
+    X_test = np.array([1.5, 2.5, 3.5, 7.5])
+    Y_pred = model.predict(X_test)
+    assert Y_pred.shape == (4, 1)
+
+
 ltr()

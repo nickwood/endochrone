@@ -7,15 +7,15 @@ __license__ = "mit"
 
 
 class LinearRegression:
-    def __init__(self, calculate_residuals=False, predict_column_vectors=None):
+    def __init__(self, calculate_residuals=False, predict_vectors=False):
         '''calculate_residuals specifies if you wish residuals to be calculated
         and stored as self.residuals_
-        predict_column_vectors lets you specify whether the predict method
+        predict_vectors lets you specify whether the predict method
         returns a 1-d or 2-d column vector (True -> 2d vector). Default
         behaviour retains the dimensionality of the Y_train set
         '''
         self.calculate_residuals = calculate_residuals
-        self.predict_column_vectors = predict_column_vectors
+        self.predict_vectors = predict_vectors
 
     # TODO: refactor to use standalone least_squares module
     def fit(self, X_train, Y_train):
@@ -23,11 +23,11 @@ class LinearRegression:
         X = np.c_[np.ones(n_samples), X_train]
         X_T = X.transpose()
 
-        if self.predict_column_vectors is None:
+        if self.predict_vectors is False:
             if Y_train.ndim == 1:
-                self.predict_column_vectors = False
+                self.predict_vectors = False
             else:
-                self.predict_column_vectors = True
+                self.predict_vectors = True
 
         beta_vector = np.linalg.inv(X_T@X)@X_T@Y_train
         if beta_vector.ndim == 1:
@@ -46,7 +46,7 @@ class LinearRegression:
         else:
             y = np.sum(X_test * self.coef_, axis=1) + self.intercept_
 
-        if self.predict_column_vectors:
+        if self.predict_vectors:
             return y[:, np.newaxis]
         else:
             return y

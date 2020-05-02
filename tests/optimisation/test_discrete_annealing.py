@@ -36,6 +36,20 @@ def test_find_maximum():
     assert np.count_nonzero(y_s > -2.1) >= 0.8 * n
 
 
+def test_specify_steps():
+
+    def f(x):
+        f.count += 1
+        return f_vals[int(x)]
+
+    f.count = 0
+
+    # Since this is non-deterministic, we run it a bunch of times and
+    # expect enough of them to pass
+    da.find_maximum(0, len(f_vals)-1, f, n_steps=3)
+    assert f.count == 4
+
+
 def test_div_zero_in_transition():
     assert da.transition(0.0, -1.0, 0.1)
     assert da.transition(0.0, 11.0, 0.001) is False

@@ -3,10 +3,6 @@
 branch = True
 source = endochrone
 
-[paths]
-source =
-    endochrone/
-
 [report]
 # Regexes for lines to exclude from consideration
 exclude_lines =

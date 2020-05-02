@@ -67,6 +67,9 @@ def test_ma1_model():
     exp_thetas = [9.6237, 0.7531]
     assert np.all(MA1.thetas_ == pytest.approx(exp_thetas, abs=0.0001))
 
+    with pytest.raises(ValueError):
+        preds = MA1.predict([])
+
     preds = MA1.predict([10, 11, 9, 10, 12])
     exp = [9.90709153, 10.44676937, 8.534137988, 10.72764068, 10.5819138]
     assert np.all(preds == pytest.approx(exp, abs=0.001))
@@ -84,6 +87,9 @@ def test_ma2_model():
     assert np.sum(MA2.residuals_**2) == pytest.approx(1.7175879816717088)
     exp_thetas = [8.86689311, 1.38181157, 1.98175309]
     assert np.all(MA2.thetas_ == pytest.approx(exp_thetas))
+
+    with pytest.raises(ValueError):
+        preds = MA2.predict([10])
 
     preds = MA2.predict([10, 11, 9, 10, 12])
     exp = [11.89642503, 5.988960158, 8.669395113, 21.41805208, 15.46732964]
