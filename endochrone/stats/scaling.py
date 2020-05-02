@@ -21,3 +21,11 @@ def mean_norm(data):
     if np.any(col_max - col_min == 0):
         raise ValueError("Can't scale: col_min == col_max")
     return (data-col_mean)/(col_max-col_min)
+
+
+def zscore(data):
+    col_mean = np.mean(data, axis=0)
+    col_stddev = np.std(data, ddof=1, axis=0)
+    if np.any(col_stddev == 0):
+        raise ValueError("Can't scale: std deviation == 0")
+    return (data-col_mean)/col_stddev
