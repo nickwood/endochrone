@@ -2,12 +2,10 @@
 [run]
 branch = True
 source = endochrone
-# omit = bad_file.py
 
 [paths]
 source =
-    src/
-    */site-packages/
+    endochrone/
 
 [report]
 # Regexes for lines to exclude from consideration

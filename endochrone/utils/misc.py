@@ -27,8 +27,12 @@ def lazy_test_runner(filename=None, verbose=False, printstdout=True):
     import pytest
     import __main__
 
+    if __main__.__file__.endswith(r'pytest.exe\__main__.py'):
+        return None
+
     if filename is None:
         filename = os.path.abspath(__main__.__file__)
+
     args = [filename[filename.find('tests'):]]
     if verbose:
         args.append('-v')
