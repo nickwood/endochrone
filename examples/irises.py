@@ -17,8 +17,8 @@ axes = iris['feature_names']
 def iris_k_means():
     from itertools import combinations
     from math import factorial as fac
-    from endochrone import naive_k_means as nkm
-    from endochrone import feature_scaling as fs
+    from endochrone.clustering import naive_k_means as nkm
+    from endochrone.stats import scaling as fs
 
     num_features = i_data.shape[1]
     num_charts = fac(num_features) // fac(2) // fac(num_features-2)
@@ -49,7 +49,7 @@ def iris_k_means():
 def iris_naive_knn(n_runs=10):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score
-    from endochrone.stats import feature_scaling as fs
+    from endochrone.stats import scaling as fs
     from endochrone.classification import naive_knn as knn
 
     s_i_data = fs.mean_norm(i_data)
@@ -117,7 +117,7 @@ def iris_bdt():
     print("mic_ prec:", metrics.micro_precision)
 
 
-# iris_k_means()
-# iris_naive_knn()
-# iris_pca()
+iris_k_means()
+iris_naive_knn()
+iris_pca()
 iris_bdt()
