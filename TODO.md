@@ -16,7 +16,7 @@ classification
 <!-- k-nearest -->
 <!-- binary decision tree -->
 <!-- random forest -->
-naive bayes
+<!-- naive bayes -->
 improve knn - tomek links & consistent subsets... - quick
 gaussian discriminant analysis
 weighted knn

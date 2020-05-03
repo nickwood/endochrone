@@ -27,7 +27,7 @@ def test_2d_fit_and_predict():
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
     assert classifier.n_feat_ == 3
-    assert np.all(classifier.classes_ == classes)
+    assert np.all(list(classifier.classes_.keys()) == classes)
     assert np.all(classifier.means_ == pytest.approx(means))
     assert np.all(classifier.variances_ == pytest.approx(variances))
     assert np.all(classifier.priors_ == 0.5)
@@ -66,7 +66,7 @@ def test_1d_fit_and_predict():
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
     assert classifier.n_feat_ == 1
-    assert np.all(classifier.classes_ == classes)
+    assert np.all(list(classifier.classes_.keys()) == classes)
     assert np.all(classifier.means_ == pytest.approx(means))
     assert np.all(classifier.variances_ == pytest.approx(variances))
     assert np.all(classifier.priors_ == 0.5)
@@ -87,7 +87,7 @@ def test_known_priors():
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
     classifier = nb.NaiveBayes()
-    classifier.fit(X, Y, pop_priors=(0.3, 0.7))
+    classifier.fit(X, Y, pop_priors={0: 0.3, 1: 0.7})
 
     assert np.all(classifier.priors_ == np.array([0.3, 0.7]))
 
@@ -96,6 +96,60 @@ def test_known_priors():
         pytest.approx(3.7182431063e-09)
     assert classifier.posterior_numerator(1, samp) ==\
         pytest.approx(0.0007529072857)
+
+
+def test_non_zero_indexed_classnames():
+    X = np.transpose([[5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75],
+                      [180, 190, 170, 165, 100, 150, 130, 150],
+                      [12, 11, 12, 10, 6, 8, 7, 9]])
+    Y = np.array([2, 2, 2, 2, 1, 1, 1, 1])
+
+    classifier = nb.NaiveBayes()
+    priors = {1: 0.49, 2: 0.51}
+    classifier.fit(X, Y, pop_priors=priors)
+
+    for i, name in classifier.classes_.items():
+        assert classifier.priors_[i] == priors[name]
+
+    samp = np.array([6, 130, 8])
+    assert classifier.predict_single(samp) == 1
+    assert classifier.predict(samp) == 1
+
+    samps = np.array([[6, 130, 8], [5.9, 180, 11]])
+    assert np.all(classifier.predict(samps) == np.array([1, 2]))
+
+
+def test_text_classes():
+    X = np.transpose([[5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75],
+                      [180, 190, 170, 165, 100, 150, 130, 150],
+                      [12, 11, 12, 10, 6, 8, 7, 9]])
+    Y = np.array(['male']*4 + ['female']*4)
+
+    classifier = nb.NaiveBayes()
+    priors = {'male': 0.49, 'female': 0.51}
+    classifier.fit(X, Y, pop_priors=priors)
+
+    samp = np.array([6, 130, 8])
+
+    assert classifier.predict_single(samp) == 'female'
+    assert classifier.predict(samp) == 'female'
+
+    for i, name in classifier.classes_.items():
+        assert classifier.priors_[i] == priors[name]
+
+    samps = np.array([[6, 130, 8], [5.9, 180, 11]])
+    assert np.all(classifier.predict(samps) == np.array(['female', 'male']))
+
+
+def test_invalid_priors():
+    X = np.array([5.92, 5.75])
+    Y = np.array([0, 1])
+
+    classifier = nb.NaiveBayes()
+    priors = {1: 0.49, 0: 0.50}
+
+    with pytest.raises(ValueError):
+        classifier.fit(X, Y, pop_priors=priors)
 
 
 ltr()

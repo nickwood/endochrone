@@ -6,15 +6,17 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-# TODO support non numeric classnames, and classnames not zero indexed
 class NaiveBayes:
     def __init__(self):
         pass
 
     def fit(self, x, y, pop_priors=None):
-        self.classes_ = np.unique(y)
+        self.classes_ = dict(enumerate(np.unique(y)))
         self.n_classes_ = len(self.classes_)
         self.n_samples_ = len(y)
+
+        if pop_priors is not None and sum(pop_priors.values()) != 1:
+            raise ValueError("Sum of population priors don't sum to 1")
 
         if x.ndim == 1:
             self.n_feat_ = 1
@@ -25,19 +27,19 @@ class NaiveBayes:
         varis = []
         priors = []
 
-        for cl in self.classes_:
-            targets = y == cl
+        for cl_ind in self.classes_.keys():
+            targets = y == self.classes_[cl_ind]
             subset = x[targets]
             means.append(np.mean(subset, axis=0))
             varis.append(np.var(subset, ddof=1, axis=0))
-            priors.append(len(subset) / self.n_samples_)
+            if pop_priors is None:
+                priors.append(len(subset) / self.n_samples_)
+            else:
+                priors.append(pop_priors[self.classes_[cl_ind]])
 
         self.means_ = np.reshape(means, (self.n_classes_, self.n_feat_))
         self.variances_ = np.reshape(varis, (self.n_classes_, self.n_feat_))
-        if pop_priors is None:
-            self.priors_ = np.array(priors)
-        else:
-            self.priors_ = np.array(pop_priors)
+        self.priors_ = np.array(priors)
 
     def predict(self, X):
         if X.shape == (self.n_feat_, ) or X.shape == (self.n_feat_, 1):
@@ -47,7 +49,7 @@ class NaiveBayes:
 
     def predict_single(self, obs):
         numers = [self.posterior_numerator(cl, obs) for cl in self.classes_]
-        return np.argmax(numers)
+        return self.classes_[np.argmax(numers)]
 
     def posterior_numerator(self, cl, obs):
         if self.n_feat_ == 1:
