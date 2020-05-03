@@ -99,8 +99,7 @@ def iris_pca():
 
 def iris_bdt():
     from sklearn.model_selection import train_test_split
-    from endochrone.classification.binary_decision_tree\
-        import BinaryDecisionTree
+    from endochrone.classification.binary_tree import BinaryDecisionTree
     from endochrone.stats.metrics import MulticlassMetrics
 
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(i_data, i_target)

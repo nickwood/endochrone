@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import time
 
 from endochrone.ensemble.random_forest import RandomForest
-from endochrone.classification import binary_decision_tree as bdt
+from endochrone.classification import binary_tree as bdt
 from endochrone.stats.metrics import MulticlassMetrics as mcm
 
 __author__ = "nickwood"
