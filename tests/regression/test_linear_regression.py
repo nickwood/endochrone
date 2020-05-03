@@ -121,7 +121,7 @@ def test_non_default_args():
     model.fit(X_train, Y_train)
 
     print(model.residuals_.shape)
-    assert np.all(model.residuals_.shape == (9,1))
+    assert np.all(model.residuals_.shape == (9, 1))
     assert np.all(model.residuals_ == pytest.approx(0))
 
     X_test = np.array([1.5, 2.5, 3.5, 7.5])
