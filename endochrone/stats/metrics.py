@@ -86,6 +86,14 @@ class BinaryMetrics(Metrics):
 
 
 class MulticlassMetrics(Metrics):
+    def __repr__(self):
+        summary = ('\nsummary statistics:' +
+                   '\nmicro_precision: %.06f' % (self.micro_precision) +
+                   '\nmacro_precision: %.06f' % (self.macro_precision) +
+                   '\nmacro_recall   : %.06f' % (self.macro_recall) +
+                   '\nmacro_f1       : %.06f' % (self.macro_f1_score))
+        return summary
+
     @cached_property
     def n_predicted(self):
         "return an array containing the number of predictions for each label"
