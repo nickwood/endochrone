@@ -35,8 +35,11 @@ class LinearRegression:
         self.intercept_ = beta_vector[0, 0]
         self.coef_ = beta_vector[1:, 0]
         if self.calculate_residuals:
-            # TODO: Add tests for this
-            self.residuals_ = Y_train - self.predict(X_train)
+            preds = self.predict(X_train)
+            if Y_train.ndim < preds.ndim:
+                self.residuals_ = Y_train[:, np.newaxis] - preds
+            else:
+                self.residuals_ = Y_train - preds
         else:
             self.residuals_ = None
 

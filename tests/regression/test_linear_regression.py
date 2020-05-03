@@ -15,12 +15,16 @@ def test_2d_zero_intercept():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
     Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])[:, np.newaxis]
 
-    model = LinearRegression()
+    model = LinearRegression(calculate_residuals=True)
     model.fit(X_train, Y_train)
 
     # test fit
     assert model.coef_[0] == pytest.approx(2)
     assert model.intercept_ == pytest.approx(0)
+
+    assert model.residuals_.shape == (9, 1)
+    print(model.residuals_[:, 0])
+    assert np.all(model.residuals_[:, 0] == pytest.approx(0))
 
     # test predictions
     X_test = np.array([1.5, 2.5, 3.5, 7.5])[:, np.newaxis]
@@ -45,6 +49,7 @@ def test_2d_nonzero_intercept():
     Y_test = np.array([4, 6, 8, 16])[:, np.newaxis]
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test))
+    assert model.residuals_ is None
 
 
 def test_nd_nonzero_intercept(n_samples=1000, dim=20):
@@ -69,6 +74,7 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test, abs=0.2))
     assert model.score(X_test, Y_test) > 0.999
+    assert model.residuals_ is None
 
 
 def test_1d_vectors():
@@ -86,6 +92,7 @@ def test_1d_vectors():
     Y_test = np.array([4, 6, 8, 16])
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test))
+    assert model.residuals_ is None
 
 
 def test_2dimx_1dimy():
@@ -106,12 +113,16 @@ def test_2dimx_1dimy():
     assert np.all(Y_pred == pytest.approx(Y_test))
 
 
-def test_predict_column_vectors():
+def test_non_default_args():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
     Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])
 
-    model = LinearRegression(predict_vectors=True)
+    model = LinearRegression(predict_vectors=True, calculate_residuals=True)
     model.fit(X_train, Y_train)
+
+    print(model.residuals_.shape)
+    assert np.all(model.residuals_.shape == (9,1))
+    assert np.all(model.residuals_ == pytest.approx(0))
 
     X_test = np.array([1.5, 2.5, 3.5, 7.5])
     Y_pred = model.predict(X_test)

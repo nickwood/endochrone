@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pytest
+from unittest.mock import Mock
 
 from endochrone.ensemble import random_forest as rf
 from endochrone.utils.misc import lazy_test_runner as ltr
@@ -23,6 +24,18 @@ def test_fit_and_predict():
 
     y_pred = test_rf.predict(x)
     assert np.count_nonzero(y == y_pred) >= 5
+
+
+def test_no_sample_size_given():
+    N = 10
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [3, 4, 5, 1, 2, 3, 4],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 0, 0, 1, 1, 1, 1])
+    test_rf = rf.RandomForest(n_trees=N)
+    assert test_rf.samp_per_tree is None
+    test_rf.fit(x, y)
+    assert test_rf.samp_per_tree is not None
 
 
 def test_concensus():
@@ -73,6 +86,33 @@ def test_take_features():
 
     with pytest.raises(ValueError):
         _ = rf.take_features(4, x, y)
+
+
+def test_feature_selection():
+    N, f = 10, 1
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [3, 4, 5, 1, 2, 3, 4],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 0, 0, 1, 1, 1, 1])
+
+    test_rf = rf.RandomForest(n_trees=N, feat_per_tree=f)
+    rf.take_features = Mock(wraps=rf.take_features)
+    test_rf.fit(x, y)
+
+    rf.take_features.assert_called_with(f, x, y)
+
+
+def test_debug_print_statements(capsys):
+    N = 3
+    x = np.transpose([[1, 2, 3, 7, 8, 9, 10],
+                      [3, 4, 5, 1, 2, 3, 4],
+                      [3, 1, 5, 1, 2, 3, 4]])
+    y = np.array([0, 0, 0, 1, 1, 1, 1])
+    test_rf = rf.RandomForest(n_trees=N)
+    test_rf.fit(x, y, debug=True)
+    captured = capsys.readouterr()
+    printed = captured.out
+    assert printed.startswith('tree fitted in ')
 
 
 ltr()

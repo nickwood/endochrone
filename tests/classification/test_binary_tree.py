@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pytest
+from unittest.mock import Mock
 
 from endochrone.classification import binary_tree as bdt
 from endochrone.utils.misc import lazy_test_runner as ltr
@@ -168,8 +169,23 @@ def test_best_partition_large():
     y = np.random.randint(0, 3, 200)
     l_ent, l_split = bdt.best_partition_large(x_feat, y)
     s_ent, s_split = bdt.best_partition_small(x_feat, y)
-
     assert l_ent == pytest.approx(s_ent, abs=0.001)
+
+
+def test_uses_annnealing_for_large_feature():
+    import random
+    np.random.seed(seed=123)
+    random.seed(1234)
+    x_feat = np.random.randint(0, 200, 200)
+    y = np.random.randint(0, 3, 200)
+
+    bdt_test = bdt.BinaryDecisionTree(max_depth=2)
+    bdt.best_partition_large = Mock(return_value=(1.5570211400483434, 8.5))
+    bdt_test.fit(x_feat[:, np.newaxis], y)
+
+    assert bdt.best_partition_large.called
+    assert bdt_test.right is not None
+    assert bdt_test.left is not None
 
 
 def test_unsplittable_feature():
@@ -181,6 +197,17 @@ def test_unsplittable_feature():
     bdt_test.fit(x, y)
     assert bdt_test.right is not None
     assert bdt_test.left is not None
+
+
+def test_no_possible_splits():
+    x = np.transpose([[2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2]])
+    y = np.array([0, 0, 1, 1, 0, 0, 0])
+    bdt_test = bdt.BinaryDecisionTree(max_depth=3)
+    bdt_test.fit(x, y)
+    assert bdt_test.right is None
+    assert bdt_test.left is None
 
 
 ltr()
