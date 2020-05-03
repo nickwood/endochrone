@@ -80,6 +80,31 @@ def test_1d_fit_and_predict():
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
 
 
+def test_three_classes():
+    X = np.array([5.92, 5.88, 5.93, 5.2, 5, 5.1, 4.4, 4.6, 4.5])
+    Y = np.array([0, 0, 0, 1, 1, 1, 2, 2, 2])
+
+    classifier = nb.NaiveBayes()
+    priors = {0: 0.45, 1: 0.45, 2: 0.1}
+    classifier.fit(X, Y, pop_priors=priors)
+
+    classes = np.array([0, 1, 2])
+    means = np.array([5.91, 5.1, 4.5])[:, np.newaxis]
+    variances = np.array([0.0007, 0.01, 0.01])[:, np.newaxis]
+
+    assert classifier.n_classes_ == 3
+    assert classifier.n_samples_ == 9
+    assert classifier.n_feat_ == 1
+    assert np.all(list(classifier.classes_.keys()) == classes)
+    assert np.all(classifier.means_ == pytest.approx(means))
+    assert np.all(classifier.variances_ == pytest.approx(variances))
+    for i, name in classifier.classes_.items():
+        assert classifier.priors_[i] == priors[name]
+
+    samps = np.array([5.9, 5.0, 4.8, 4.4])
+    assert np.all(classifier.predict(samps) == np.array([0, 1, 1, 2]))
+
+
 def test_known_priors():
     X = np.transpose([[5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75],
                       [180, 190, 170, 165, 100, 150, 130, 150],
