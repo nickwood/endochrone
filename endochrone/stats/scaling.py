@@ -6,6 +6,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+# TODO make these reversible
 def min_max(data):
     col_min = np.min(data, axis=0)
     col_max = np.max(data, axis=0)

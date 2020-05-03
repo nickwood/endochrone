@@ -18,6 +18,7 @@ classification
 <!-- * random forest -->
 <!-- * naive bayes -->
 * improve knn - tomek links & consistent subsets... - quick
+* naive bayes + laplace moving - quick
 * gaussian discriminant analysis
 * weighted knn
 * perceptron w/ WINNOW
@@ -28,6 +29,10 @@ classification
 Clustering
 ---------
 * improve k-means
+* mean-shift
+* DBSCAN
+* EM/GMM
+* Agglomerative Hierarchical Clustering
 
 Transformation/Dimension reduction
 ---------------------------------
