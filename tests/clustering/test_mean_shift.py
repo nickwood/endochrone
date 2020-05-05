@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pytest
+from unittest.mock import Mock
 
 from endochrone.utils.misc import lazy_test_runner as ltr
 from endochrone.clustering import mean_shift as ms
@@ -115,12 +116,54 @@ def test_nd_flat_fit():
     assert np.all(labels == np.arange(0, 2))
 
 
-def test_1d_gaussian_fit():
-    pass
+
+def test_1d_gaussian_fit_and_predict():
+    X1 = np.arange(0, 6, 1)
+    clusters = ms.MeanShift(bandwidth=2, kernel='gaussian')
+    ms.gaussian_1d = Mock(wraps=ms.gaussian_1d)
+    centres1, labels1 = clusters.fit(X1)
+    ms.gaussian_1d.assert_called()
+    assert centres1 == np.array([2.5])
+    assert labels1 == np.array([0])
+
+    X2 = np.hstack([np.arange(0, 3, 1), np.arange(6, 9, 1)])
+    clusters2 = ms.MeanShift(bandwidth=2, kernel='gaussian')
+    centres2, labels2 = clusters2.fit(X2)
+    assert np.all(centres2 == pytest.approx(np.array([1, 7])))
+    assert np.all(labels2 == np.array([0, 1]))
+
+    to_predict = np.arange(3, 7)
+    assert np.all(clusters.predict(to_predict) == 0)
+    assert np.all(clusters2.predict(to_predict) == np.array([0, 0, 1, 1]))
 
 
-def test_2d_gaussian_fit():
-    pass
+def test_2d_gaussian_fit_and_predict():
+    X = np.arange(0, 60).reshape(30, 2)
+    clusters = ms.MeanShift(bandwidth=23, kernel='gaussian')
+    ms.gaussian_2d = Mock(wraps=ms.gaussian_2d)
+    centres, labels = clusters.fit(X)
+    ms.gaussian_2d.assert_called()
+    exp = np.arange(29., 31.).reshape(1, 2)
+    assert np.all(centres == pytest.approx(exp))
+    assert labels == np.arange(0, 1)
+
+    clusters2 = ms.MeanShift(bandwidth=14, kernel='gaussian')
+    centres, labels = clusters2.fit(X)
+    c1 = np.arange(13.60007775, 15)
+    c2 = np.arange(29., 31.)
+    c3 = np.arange(44.39992225, 46)
+    exp = np.array([c1, c2, c3])
+    assert np.all(centres == pytest.approx(exp))
+    assert np.all(labels == np.arange(0, 3))
+
+    to_predict = np.array([[11, 15], [24, 34], [37, 39]])
+    assert np.all(clusters.predict(to_predict) == 0)
+    assert np.all(clusters2.predict(to_predict) == np.array([0, 1, 2]))
+
+
+def test_invalid_kernel():
+    with pytest.raises(ValueError):
+        _ = ms.MeanShift(bandwidth=23, kernel='test')
 
 
 ltr()
