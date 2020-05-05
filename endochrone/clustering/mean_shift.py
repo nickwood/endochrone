@@ -14,6 +14,10 @@ class MeanShift:
         self.bandwidth = bandwidth
         if kernel == 'flat':
             self.kernel = partial(flat)
+        elif kernel == 'gaussian':
+            self.kernel = partial(gaussian)
+        else:
+            raise ValueError("Unknown Kernel: %s" % kernel)
 
     def fit(self, X):
         points = np.copy(X).astype(float)
@@ -32,7 +36,7 @@ class MeanShift:
         pass
 
 
-def neighbours(p, X, bandwidth):
+def neighbours(X, p, bandwidth):
     '''Returns a list of points in "X" that are within a distance "bandwidth"
     of point "p"'''
     return X[np.array([dist(p, comp) for comp in X]) <= bandwidth]
@@ -41,7 +45,7 @@ def neighbours(p, X, bandwidth):
 def flat(X, p, bandwidth):
     '''Return the centre of mass - i.e. mean - of points in X within
     neighbourhood = bandwidth'''
-    return np.mean(neighbours(p, X, bandwidth), axis=0)
+    return np.mean(neighbours(X, p, bandwidth), axis=0, keepdims=True)
 
 
 def gaussian(X, p, bandwidth):
@@ -54,7 +58,7 @@ def gaussian(X, p, bandwidth):
 
 
 def gaussian_1d(X, p, bandwidth):
-    neighb = neighbours(p, X, bandwidth)
+    neighb = neighbours(X, p, bandwidth)
     sq_distances = (neighb-p)**2
     exponentials = np.exp((-1/2)*sq_distances/bandwidth**2)
     numerator = np.sum(neighb*exponentials, axis=0)
@@ -63,7 +67,7 @@ def gaussian_1d(X, p, bandwidth):
 
 
 def gaussian_2d(X, p, bandwidth):
-    neighb = neighbours(p, X, bandwidth)
+    neighb = neighbours(X, p, bandwidth)
     sq_distances = np.sum((neighb-p)**2, axis=1)
     exponentials = np.exp((-1/2)*sq_distances/bandwidth**2)
     numerator = np.sum(neighb*exponentials[:, np.newaxis], axis=0)
