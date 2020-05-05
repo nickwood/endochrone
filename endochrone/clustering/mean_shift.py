@@ -28,12 +28,19 @@ class MeanShift:
             for i, p in enumerate(prev):
                 points[i] = self.kernel(prev, p, bw)
         self.centres_ = np.unique(points, axis=0)
-        self.labels_ = np.arange(0, len(self.centres_))
+        self.n_centres_ = len(self.centres_)
+        self.labels_ = np.arange(0, self.n_centres_)
         return self.centres_, self.labels_
 
-    def predict(self):
-        # TODO
-        pass
+    def predict(self, X):
+        # if self.centres_ is None: raise error
+        return np.array([self.predict_point(p) for p in X])
+
+    def predict_point(self, p):
+        if len(self.labels_) == 1:
+            return 0
+        else:
+            return np.argmin([dist(p, c) for c in self.centres_])
 
 
 def neighbours(X, p, bandwidth):
