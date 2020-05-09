@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
-from endochrone.regression.linear_regression import LinearRegression
+from endochrone.regression import LinearRegression
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
