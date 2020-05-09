@@ -66,17 +66,17 @@ def gaussian(X, p, bandwidth):
 
 def gaussian_1d(X, p, bandwidth):
     neighb = neighbours(X, p, bandwidth)
-    sq_distances = (neighb-p)**2
-    exponentials = np.exp((-1/2)*sq_distances/bandwidth**2)
-    numerator = np.sum(neighb*exponentials, axis=0)
+    sq_distances = (neighb - p)**2
+    exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
+    numerator = np.sum(neighb * exponentials, axis=0)
     denominator = np.sum(exponentials)
     return numerator/denominator
 
 
 def gaussian_2d(X, p, bandwidth):
     neighb = neighbours(X, p, bandwidth)
-    sq_distances = np.sum((neighb-p)**2, axis=1)
-    exponentials = np.exp((-1/2)*sq_distances/bandwidth**2)
-    numerator = np.sum(neighb*exponentials[:, np.newaxis], axis=0)
+    sq_distances = np.sum((neighb - p)**2, axis=1)
+    exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
+    numerator = np.sum(neighb * exponentials[:, np.newaxis], axis=0)
     denominator = np.sum(exponentials)
     return numerator/denominator
