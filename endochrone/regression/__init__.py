@@ -1,1 +1,3 @@
-from endochrone.regression.linear_regression import LinearRegression  # noqa:F401, E501
+from endochrone.regression.linear_regression import LinearRegression
+
+__all__ = ['LinearRegression']
