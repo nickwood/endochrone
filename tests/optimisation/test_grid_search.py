@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from endochrone.utils.misc import lazy_test_runner as ltr
+from endochrone.utils import lazy_test_runner as ltr
 from endochrone.optimisation import GridSearch
 
 __author__ = "nickwood"

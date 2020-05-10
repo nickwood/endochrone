@@ -1,1 +1,4 @@
-from endochrone.optimisation.grid_search import GridSearch  # noqa:F401
+from endochrone.optimisation.grid_search import GridSearch
+from endochrone.optimisation.gradient_descent import GradientDescent
+
+__all__ = ['GradientDescent', 'GridSearch']

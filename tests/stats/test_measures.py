@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from endochrone.stats.measures import euclidean_dist
-from endochrone.utils.misc import lazy_test_runner as ltr
+from endochrone.utils import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

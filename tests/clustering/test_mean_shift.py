@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from unittest.mock import Mock
 
-from endochrone.utils.misc import lazy_test_runner as ltr
+from endochrone.utils import lazy_test_runner as ltr
 from endochrone.clustering import mean_shift as ms
 
 __author__ = "nickwood"
