@@ -9,7 +9,6 @@ Time Series
 * ACF with FFT
 * Causal inference
 
-
 classification
 --------------
 <!-- * k-means -->
@@ -17,6 +16,8 @@ classification
 <!-- * binary decision tree -->
 <!-- * random forest -->
 <!-- * naive bayes -->
+* logistic regression
+* optimal margin classifier / Support vector machine
 * improve knn - tomek links & consistent subsets... - quick
 * naive bayes + laplace moving - quick
 * gaussian discriminant analysis
@@ -28,8 +29,8 @@ classification
 
 Clustering
 ---------
-* improve k-means
-* mean-shift
+<!-- * k-means -->
+<!-- * mean-shift -->
 * DBSCAN
 * EM/GMM
 * Agglomerative Hierarchical Clustering
@@ -42,7 +43,7 @@ Transformation/Dimension reduction
 * kernel pca
 * Factor analysis
 * atribute selection
-* Support vector machine
+
 * isomap
 
 stats
@@ -51,6 +52,7 @@ stats
 
 Optimisation
 ------------
+<!-- * grid search -->
 * least squares
 * regularisation
 * gradient descent
@@ -72,7 +74,6 @@ Regression
 <!-- * linear regression -->
 * ridge regression
 * polynomial regression
-* logistic regression
 
 
 Deep learning
