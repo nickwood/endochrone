@@ -4,7 +4,7 @@ import pytest
 
 from endochrone.utils import lazy_test_runner as ltr
 import endochrone.optimisation.gradient_descent as gd
-from endochrone.optimisation import GradientDescent
+from endochrone.optimisation import BatchGradientDescent
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -45,7 +45,6 @@ def test_approx_jacobian_2x2():
     p0 = {'x': 1, 'y': 1}
     jac0 = gd.approx_jacobian(funcs, p0)
     assert jac0.shape == (2, 2)
-    print(jac0)
     assert jac0[0, 0] == pytest.approx(2., abs=0.0001)
     assert jac0[0, 1] == pytest.approx(1., abs=0.0001)
     assert jac0[1, 0] == pytest.approx(5., abs=0.0001)
@@ -79,16 +78,46 @@ def test_approx_jacobian_3x4():
 
 
 def test_gradient_descent():
-    def abs_function(*, a, b):
-        return (np.abs(a - 1.5) + np.abs(b - 1.5))
+    def poly_function(*, a, b):
+        return 1.75 + (a - 1.5)**2 + 3*(b - 0.75)**2
 
-    with pytest.raises(NotImplementedError):
-        gs_test = GradientDescent()
-        gs_test.fit(abs_function)
+    x0 = {'a': 20, 'b': 150}
+    gs_test = BatchGradientDescent()
+    gs_test.fit(func=poly_function, x0=x0)
 
-    # assert gs_test.minimum == pytest.approx(0.0)
-    # assert gs_test.min_args['a'] == pytest.approx(1.5)
-    # assert gs_test.min_args['b'] == pytest.approx(1.5)
+    assert gs_test.minimum == pytest.approx(1.75, abs=0.0001)
+    assert gs_test.min_args['a'] == pytest.approx(1.5, abs=0.0001)
+    assert gs_test.min_args['b'] == pytest.approx(0.75, abs=0.0001)
+
+
+def test_custom_learning_rate():
+    def rosen(*, x, y):
+        return (1-x)**2 + (y-x**2)**2
+
+    x0 = {'x': 1.3, 'y': 0.7}
+
+    def lr(t):
+        return 0.2*np.exp(-t/400)
+
+    gs_test = BatchGradientDescent(learning_rate=lr, tol=0.001)
+    assert gs_test.lr_(10) == pytest.approx(0.195062)
+    assert gs_test.fit(func=rosen, x0=x0)
+    assert gs_test.min_args['x'] == pytest.approx(1., abs=0.01)
+    assert gs_test.min_args['y'] == pytest.approx(1., abs=0.01)
+
+
+def test_non_convergence():
+    def abs_function(*, x, y):
+        return (np.abs(x - 1.5) + np.abs(y - 1.5))
+
+    x0 = {'x': 1.3, 'y': 0.7}
+
+    def lr(t):
+        return 0.2
+
+    gs_test = BatchGradientDescent(learning_rate=lr, tol=0.001)
+    assert gs_test.lr_(10) == pytest.approx(0.2)
+    assert gs_test.fit(func=abs_function, x0=x0) is False
 
 
 ltr()

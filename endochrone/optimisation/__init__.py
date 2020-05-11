@@ -1,4 +1,4 @@
 from endochrone.optimisation.grid_search import GridSearch
-from endochrone.optimisation.gradient_descent import GradientDescent
+from endochrone.optimisation.gradient_descent import BatchGradientDescent
 
-__all__ = ['GradientDescent', 'GridSearch']
+__all__ = ['BatchGradientDescent', 'GridSearch']
