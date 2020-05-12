@@ -3,12 +3,18 @@ import numpy as np
 import pytest
 import random
 
+from endochrone.regression import linear_regression as lr
 from endochrone.regression import LinearRegression
 from endochrone.utils import lazy_test_runner as ltr
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
 __license__ = "mit"
+
+
+def test_invalid_method():
+    with pytest.raises(ValueError):
+        _ = LinearRegression(method='bob')
 
 
 def test_2d_zero_intercept():
@@ -113,6 +119,33 @@ def test_2dimx_1dimy():
     assert np.all(Y_pred == pytest.approx(Y_test))
 
 
+def test_gradient_desc():
+    X_train = np.transpose([[1, 2, 3, 4, 5, 6, 7, 8, 9],
+                            [1, 2, 3, 4, 5, 6, 7, 8, 9]])
+    Y_train = np.array([6, 10, 14, 18, 22, 26, 30, 34, 38])
+
+    model_la = LinearRegression()
+    with pytest.raises(np.linalg.LinAlgError):
+        model_la.fit(X_train, Y_train)
+
+    model_gd_no_params = LinearRegression(method='gradient_descent')
+    with pytest.raises(AttributeError):
+        model_gd_no_params.fit(X_train, Y_train)
+
+    gd_params = {'tol': 0.001, 'max_iter': 2000, 'learning_rate': 2}
+    model_gd = LinearRegression(method='gradient_descent', params=gd_params)
+    model_gd.fit(X_train, Y_train)
+
+    assert np.sum(model_gd.coef_) == pytest.approx(4, abs=0.1)
+    assert model_gd.intercept_ == pytest.approx(2, abs=0.2)
+
+    # test predictions
+    X_test = np.transpose([[1.5, 2.5, 3.5, 7.5], [1.5, 2.5, 3.5, 7.5]])
+    Y_test = np.array([8, 12, 16, 32])
+    Y_pred = model_gd.predict(X_test)
+    assert np.all(Y_pred == pytest.approx(Y_test, abs=0.2))
+
+
 def test_non_default_args():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
     Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])
@@ -129,4 +162,16 @@ def test_non_default_args():
     assert Y_pred.shape == (4, 1)
 
 
-ltr()
+# ltr()
+test_gradient_desc()
+# X = np.transpose([[1, 2, 3, 4, 5, 6, 7, 8, 9],
+#                   [1, 2, 1, 2, 1, 2, 1, 2, 12]])
+# Y = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
+
+# coefs = {'x0': 1, 'x1': 2, 'x2': 3}
+# # X = np.array([[1, 0], [0, 1], [2, 4]])
+# # Y = np.array([3, 5, 13])
+
+# # print(lr.evaluate(X=X, **coefs))
+# # print(lr.sq_errors(X=X, Y=Y, **coefs))
+# print(lr.new_fit(X=X, Y=Y))
