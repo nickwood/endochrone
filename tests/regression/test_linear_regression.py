@@ -19,7 +19,7 @@ def test_invalid_method():
 
 def test_2d_zero_intercept():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
-    Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])[:, np.newaxis]
+    Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])
 
     model = LinearRegression(calculate_residuals=True)
     model.fit(X_train, Y_train)
@@ -28,20 +28,19 @@ def test_2d_zero_intercept():
     assert model.coef_[0] == pytest.approx(2)
     assert model.intercept_ == pytest.approx(0)
 
-    assert model.residuals_.shape == (9, 1)
-    print(model.residuals_[:, 0])
-    assert np.all(model.residuals_[:, 0] == pytest.approx(0))
+    assert model.residuals_.shape == (9,)
+    assert np.all(model.residuals_ == pytest.approx(0))
 
     # test predictions
     X_test = np.array([1.5, 2.5, 3.5, 7.5])[:, np.newaxis]
-    Y_test = np.array([3, 5, 7, 15])[:, np.newaxis]
+    Y_test = np.array([3, 5, 7, 15])
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test))
 
 
 def test_2d_nonzero_intercept():
     X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
-    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])[:, np.newaxis]
+    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
 
     model = LinearRegression()
     model.fit(X_train, Y_train)
@@ -52,10 +51,21 @@ def test_2d_nonzero_intercept():
 
     # test predictions
     X_test = np.array([1.5, 2.5, 3.5, 7.5])[:, np.newaxis]
-    Y_test = np.array([4, 6, 8, 16])[:, np.newaxis]
+    Y_test = np.array([4, 6, 8, 16])
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test))
     assert model.residuals_ is None
+
+
+def test_invalid_dimensions():
+    X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])[:, np.newaxis]
+    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
+
+    model = LinearRegression()
+    with pytest.raises(ValueError):
+        model.fit(X_train, Y_train[:, np.newaxis])
+    with pytest.raises(ValueError):
+        model.fit(X_train.ravel(), Y_train)
 
 
 def test_nd_nonzero_intercept(n_samples=1000, dim=20):
@@ -64,7 +74,7 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     intercept = random.uniform(-10, 10)
     Y_train_values = [sum(point*coefs) + intercept + random.uniform(-0.2, 0.2)
                       for point in X_train]
-    Y_train = np.array(Y_train_values)[:, np.newaxis]
+    Y_train = np.array(Y_train_values)
 
     model = LinearRegression()
     model.fit(X_train, Y_train)
@@ -76,28 +86,10 @@ def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     # test predictions
     X_test = np.random.uniform(100, size=(50, dim))
     Y_test = np.array([sum(point*coefs) + intercept
-                       for point in X_test])[:, np.newaxis]
+                       for point in X_test])
     Y_pred = model.predict(X_test)
     assert np.all(Y_pred == pytest.approx(Y_test, abs=0.2))
     assert model.score(X_test, Y_test) > 0.999
-    assert model.residuals_ is None
-
-
-def test_1d_vectors():
-    X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    Y_train = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
-
-    model = LinearRegression()
-    model.fit(X_train, Y_train)
-
-    assert model.coef_[0] == pytest.approx(2)
-    assert model.intercept_ == pytest.approx(1)
-
-    # test predictions
-    X_test = np.array([1.5, 2.5, 3.5, 7.5])
-    Y_test = np.array([4, 6, 8, 16])
-    Y_pred = model.predict(X_test)
-    assert np.all(Y_pred == pytest.approx(Y_test))
     assert model.residuals_ is None
 
 
@@ -146,32 +138,4 @@ def test_gradient_desc():
     assert np.all(Y_pred == pytest.approx(Y_test, abs=0.2))
 
 
-def test_non_default_args():
-    X_train = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    Y_train = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18])
-
-    model = LinearRegression(predict_vectors=True, calculate_residuals=True)
-    model.fit(X_train, Y_train)
-
-    print(model.residuals_.shape)
-    assert np.all(model.residuals_.shape == (9, 1))
-    assert np.all(model.residuals_ == pytest.approx(0))
-
-    X_test = np.array([1.5, 2.5, 3.5, 7.5])
-    Y_pred = model.predict(X_test)
-    assert Y_pred.shape == (4, 1)
-
-
-# ltr()
-test_gradient_desc()
-# X = np.transpose([[1, 2, 3, 4, 5, 6, 7, 8, 9],
-#                   [1, 2, 1, 2, 1, 2, 1, 2, 12]])
-# Y = np.array([3, 5, 7, 9, 11, 13, 15, 17, 19])
-
-# coefs = {'x0': 1, 'x1': 2, 'x2': 3}
-# # X = np.array([[1, 0], [0, 1], [2, 4]])
-# # Y = np.array([3, 5, 13])
-
-# # print(lr.evaluate(X=X, **coefs))
-# # print(lr.sq_errors(X=X, Y=Y, **coefs))
-# print(lr.new_fit(X=X, Y=Y))
+ltr()

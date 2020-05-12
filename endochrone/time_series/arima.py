@@ -9,7 +9,6 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-# TODO: refecator to use optimise least squares - when written
 class ArModel(LinearRegression):
     def __init__(self, *args, order=1, **kwargs):
         self.order = order
@@ -21,10 +20,7 @@ class ArModel(LinearRegression):
         super().fit(features, targets)
 
     def predict(self, x_test):
-        if x_test.ndim == 1:
-            features = self.generate_lags(x_test, include_last=True)
-        else:
-            features = x_test
+        features = self.generate_lags(x_test, include_last=True)
         return super().predict(features)
 
     def generate_lags(self, x, include_last=False):
@@ -54,7 +50,7 @@ class MaModel:
         return res
 
     def fit(self, x):
-        # iniitalise guesses for mu and thetas
+        # initialise guesses for mu and thetas
         initial = np.array([np.mean(x)] + [0.5]*self.order)
 
         # TODO write our own least squares module
