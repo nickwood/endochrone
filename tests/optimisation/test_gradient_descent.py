@@ -90,17 +90,13 @@ def test_gradient_descent():
     assert gs_test.min_args['b'] == pytest.approx(0.75, abs=0.0001)
 
 
-def test_custom_learning_rate():
+def test_rosen_func():
     def rosen(*, x, y):
         return (1-x)**2 + (y-x**2)**2
 
     x0 = {'x': 1.3, 'y': 0.7}
 
-    def lr(t):
-        return 0.2*np.exp(-t/400)
-
-    gs_test = BatchGradientDescent(learning_rate=lr, tol=0.001)
-    assert gs_test.lr_(10) == pytest.approx(0.195062)
+    gs_test = BatchGradientDescent(learning_rate=0.2, tol=0.001)
     assert gs_test.fit(func=rosen, x0=x0)
     assert gs_test.min_args['x'] == pytest.approx(1., abs=0.01)
     assert gs_test.min_args['y'] == pytest.approx(1., abs=0.01)
@@ -108,15 +104,11 @@ def test_custom_learning_rate():
 
 def test_non_convergence():
     def abs_function(*, x, y):
-        return (np.abs(x - 1.5) + np.abs(y - 1.5))
+        return (x+y)
 
     x0 = {'x': 1.3, 'y': 0.7}
 
-    def lr(t):
-        return 0.2
-
-    gs_test = BatchGradientDescent(learning_rate=lr, tol=0.001)
-    assert gs_test.lr_(10) == pytest.approx(0.2)
+    gs_test = BatchGradientDescent(learning_rate=0.2, tol=0.001)
     assert gs_test.fit(func=abs_function, x0=x0) is False
 
 

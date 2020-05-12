@@ -8,14 +8,11 @@ __license__ = "mit"
 
 
 class BatchGradientDescent:
-    def __init__(self, learning_rate: callable = None, jac=None, tol=0.001,
+    def __init__(self, learning_rate=1, jac=None, tol=0.001,
                  max_iter=100):
         self.tol_ = tol
         self.max_iter = max_iter
-        if learning_rate is None:
-            self.lr_ = lambda t: 1/t
-        else:
-            self.lr_ = learning_rate
+        self.lr_ = learning_rate
 
     def fit(self, *, x0: dict,  funcs: Iterable[callable] = None, func=None):
         if func is not None:
@@ -27,13 +24,25 @@ class BatchGradientDescent:
         t = 0
         x_prev = None
         x_next = x0
+        rest = 0
         while diff_points(x_prev, x_next, self.tol_) and t < self.max_iter:
             x_prev = x_next
             t += 1
             jac_x = approx_jacobian([func], x_prev)[0]
-            delta_x = -1 * self.lr_(t) * jac_x
+            delta_x = -1 * self.lr_ * jac_x
             x_next_vals = np.fromiter(x_prev.values(), dtype=float) + delta_x
-            x_next = dict(zip(x_prev.keys(), x_next_vals))
+            x_try = dict(zip(x_prev.keys(), x_next_vals))
+            if func(**x_try) > func(**x_prev):
+                x_prev = None
+                self.lr_ /= 2
+            else:
+                x_next = dict(zip(x_prev.keys(), x_next_vals))
+                # once we're close we increase the lr to try and get closer
+                if not diff_points(x_prev, x_next, self.tol_) and rest <= 3:
+                    self.lr_ *= 10
+                    rest += 1
+                    x_prev = None
+
         self.minimum = func(**x_next)
         self.min_args = x_next
         self.n_steps = t
@@ -72,4 +81,5 @@ def approx_jacobian(functions: Iterable[callable], point: dict, delta=0.00001):
         delta_point = dict(point, **{k: point[k] + delta})
         delta_f = np.array([functions[j](**delta_point) for j in range(M)])
         jac[:, i] = (delta_f - f_initial) / delta
+
     return jac
