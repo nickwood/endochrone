@@ -29,19 +29,24 @@ class BatchGradientDescent:
             x_prev = x_next
             t += 1
             jac_x = approx_jacobian([func], x_prev)[0]
-            delta_x = -1 * self.lr_ * jac_x
-            x_next_vals = np.fromiter(x_prev.values(), dtype=float) + delta_x
-            x_try = dict(zip(x_prev.keys(), x_next_vals))
-            if func(**x_try) > func(**x_prev):
-                x_prev = None
-                self.lr_ /= 2
-            else:
-                x_next = dict(zip(x_prev.keys(), x_next_vals))
+
+            f_x_prev = func(**x_prev)
+            x_prev_vals = np.fromiter(x_prev.values(), dtype=float)
+
+            x_try = None
+            f_x_try = None
+            while x_try is None or f_x_try > f_x_prev:
+                x_try_vals = x_prev_vals - self.lr_ * jac_x
+                x_try = dict(zip(x_prev.keys(), x_try_vals))
+                f_x_try = func(**x_try)
                 # once we're close we increase the lr to try and get closer
-                if not diff_points(x_prev, x_next, self.tol_) and rest <= 3:
-                    self.lr_ *= 10
+                if not diff_points(x_prev, x_try, self.tol_) and rest <= 3:
+                    self.lr_ *= 5
                     rest += 1
-                    x_prev = None
+                    x_try = None
+                elif f_x_try > f_x_prev:
+                    self.lr_ /= 2
+            x_next = x_try
 
         self.minimum = func(**x_next)
         self.min_args = x_next

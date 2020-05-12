@@ -82,7 +82,7 @@ def test_gradient_descent():
         return 1.75 + (a - 1.5)**2 + 3*(b - 0.75)**2
 
     x0 = {'a': 20, 'b': 150}
-    gs_test = BatchGradientDescent()
+    gs_test = BatchGradientDescent(tol=0.0001)
     gs_test.fit(func=poly_function, x0=x0)
 
     assert gs_test.minimum == pytest.approx(1.75, abs=0.0001)
