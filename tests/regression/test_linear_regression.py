@@ -121,7 +121,7 @@ def test_gradient_desc():
         model_la.fit(X_train, Y_train)
 
     model_gd_no_params = LinearRegression(method='gradient_descent')
-    with pytest.raises(AttributeError):
+    with pytest.warns(RuntimeWarning):
         model_gd_no_params.fit(X_train, Y_train)
 
     gd_params = {'tol': 0.001, 'max_iter': 2000, 'learning_rate': 2}

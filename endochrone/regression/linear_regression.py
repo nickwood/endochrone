@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import partial
 import numpy as np
+import warnings
 
 from endochrone.optimisation import BatchGradientDescent
 
@@ -64,8 +65,10 @@ class LinearRegression:
             self.coef_dict_ = gd.min_args
             self.intercept_ = gd.min_args['x0']
             self.coef_ = list(gd.min_args.values())[1:]
+            return True
         else:
-            raise AttributeError("GD algorithm did not terminate")
+            warnings.warn("GD algorithm did not terminate", RuntimeWarning)
+            return False
 
     def predict(self, X_test):
         return evaluate(X=X_test, **self.coef_dict_)
