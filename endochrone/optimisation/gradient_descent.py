@@ -9,10 +9,11 @@ __license__ = "mit"
 
 class BatchGradientDescent:
     def __init__(self, learning_rate=1, jac=None, tol=0.001,
-                 max_iter=100):
+                 max_iter=100, boost_prob=0):
         self.tol_ = tol
         self.max_iter = max_iter
         self.lr_ = learning_rate
+        self.boost_prob = boost_prob
 
     def fit(self, *, x0: dict,  funcs: Iterable[callable] = None, func=None):
         if func is not None:
@@ -29,12 +30,13 @@ class BatchGradientDescent:
             x_prev = x_next
             t += 1
             jac_x = approx_jacobian([func], x_prev)[0]
-
+            
             f_x_prev = func(**x_prev)
             x_prev_vals = np.fromiter(x_prev.values(), dtype=float)
 
             x_try = None
             f_x_try = None
+            boost_prob = self.boost_prob
             while x_try is None or f_x_try > f_x_prev:
                 x_try_vals = x_prev_vals - self.lr_ * jac_x
                 x_try = dict(zip(x_prev.keys(), x_try_vals))
@@ -46,6 +48,9 @@ class BatchGradientDescent:
                     x_try = None
                 elif f_x_try > f_x_prev:
                     self.lr_ /= 2
+                else:
+                    if boost_prob and np.random.uniform(0, 1) < boost_prob:
+                        self.lr_ *= 2
             x_next = x_try
 
         self.minimum = func(**x_next)
