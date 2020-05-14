@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 import random
 
-from endochrone.regression import linear_regression as lr
 from endochrone.regression import LinearRegression
 from endochrone.utils import lazy_test_runner as ltr
 
