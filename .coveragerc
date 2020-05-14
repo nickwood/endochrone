@@ -3,8 +3,13 @@
 branch = True
 source = endochrone
 
+
 [report]
 # Regexes for lines to exclude from consideration
+omit = 
+    endochrone\utils\misc.py
+    */__init__.py
+
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
