@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import time
 
 from endochrone.ensemble.random_forest import RandomForest
-from endochrone.classification.binary_tree import binary_tree as bdt
+from endochrone.classification import binary_tree as bdt
 from endochrone.stats.metrics import MulticlassMetrics as mcm
 
 __author__ = "nickwood"
@@ -78,9 +78,11 @@ def pca_and_pair_plot():
     pca_x = pcam_min.transform(scaled_x)
     labels = (list(range(N)) + ['species'])
     df = pd.DataFrame(np.hstack([pca_x, y[:, np.newaxis]]), columns=labels)
+    print(df.shape)
+    quit()
     sns.pairplot(df, hue='species', size=1.5)
     plt.show()
-
+pca_and_pair_plot()
 
 def with_pca():
     from endochrone.stats import scaling as fs
