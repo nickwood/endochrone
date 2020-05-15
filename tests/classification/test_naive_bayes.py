@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 from endochrone.utils import lazy_test_runner as ltr
-import endochrone.classification.naive_bayes as nb
 from endochrone.classification import NaiveBayes
 
 __author__ = "nickwood"
@@ -17,7 +16,7 @@ def test_2d_fit_and_predict():
                       [12, 11, 12, 10, 6, 8, 7, 9]])
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     classifier.fit(X, Y)
 
     classes = np.array([0, 1])
@@ -57,7 +56,7 @@ def test_1d_fit_and_predict():
     X = np.array([5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75])
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     classifier.fit(X, Y)
 
     classes = np.array([0, 1])
@@ -85,7 +84,7 @@ def test_three_classes():
     X = np.array([5.92, 5.88, 5.93, 5.2, 5, 5.1, 4.4, 4.6, 4.5])
     Y = np.array([0, 0, 0, 1, 1, 1, 2, 2, 2])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     priors = {0: 0.45, 1: 0.45, 2: 0.1}
     classifier.fit(X, Y, pop_priors=priors)
 
@@ -112,7 +111,7 @@ def test_known_priors():
                       [12, 11, 12, 10, 6, 8, 7, 9]])
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     classifier.fit(X, Y, pop_priors={0: 0.3, 1: 0.7})
 
     assert np.all(classifier.priors_ == np.array([0.3, 0.7]))
@@ -130,7 +129,7 @@ def test_non_zero_indexed_classnames():
                       [12, 11, 12, 10, 6, 8, 7, 9]])
     Y = np.array([2, 2, 2, 2, 1, 1, 1, 1])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     priors = {1: 0.49, 2: 0.51}
     classifier.fit(X, Y, pop_priors=priors)
 
@@ -151,7 +150,7 @@ def test_text_classes():
                       [12, 11, 12, 10, 6, 8, 7, 9]])
     Y = np.array(['male']*4 + ['female']*4)
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     priors = {'male': 0.49, 'female': 0.51}
     classifier.fit(X, Y, pop_priors=priors)
 
@@ -171,7 +170,7 @@ def test_invalid_priors():
     X = np.array([5.92, 5.75])
     Y = np.array([0, 1])
 
-    classifier = nb.NaiveBayes()
+    classifier = NaiveBayes()
     priors = {1: 0.49, 0: 0.50}
 
     with pytest.raises(ValueError):

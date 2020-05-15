@@ -142,7 +142,7 @@ def test_simple_fit_and_predict():
                       [3, 1, 5, 1, 2, 3, 4]])
     y = np.array([0, 0, 0, 1, 1, 1, 1])
 
-    bdt_test = bdt.BinaryDecisionTree()
+    bdt_test = BinaryDecisionTree()
     bdt_test.fit(x, y)
     x_test = np.transpose([[2, 3, 4.9, 5.0, 5.1, 6, 8, 9],
                            [1, 2, 3, 4, 5, 6, 7, 8],
@@ -157,7 +157,7 @@ def test_max_depth():
                       [3, 4, 5, 1, 2, 3, 4],
                       [3, 1, 5, 1, 2, 3, 4]])
     y = np.array([0, 1, 0, 1, 0, 1, 0])
-    bdt_test = bdt.BinaryDecisionTree(max_depth=2)
+    bdt_test = BinaryDecisionTree(max_depth=2)
     bdt_test.fit(x, y)
     assert bdt_test.right.size == 5
 
@@ -180,7 +180,7 @@ def test_uses_annnealing_for_large_feature():
     x_feat = np.random.randint(0, 200, 200)
     y = np.random.randint(0, 3, 200)
 
-    bdt_test = bdt.BinaryDecisionTree(max_depth=2)
+    bdt_test = BinaryDecisionTree(max_depth=2)
     bdt.best_partition_large = Mock(return_value=(1.5570211400483434, 8.5))
     bdt_test.fit(x_feat[:, np.newaxis], y)
 
@@ -194,7 +194,7 @@ def test_unsplittable_feature():
                       [2, 2, 2, 2, 2, 2, 2],
                       [3, 1, 5, 1, 2, 3, 4]])
     y = np.array([0, 1, 0, 1, 0, 1, 0])
-    bdt_test = bdt.BinaryDecisionTree(max_depth=3)
+    bdt_test = BinaryDecisionTree(max_depth=3)
     bdt_test.fit(x, y)
     assert bdt_test.right is not None
     assert bdt_test.left is not None
@@ -205,7 +205,7 @@ def test_no_possible_splits():
                       [2, 2, 2, 2, 2, 2, 2],
                       [2, 2, 2, 2, 2, 2, 2]])
     y = np.array([0, 0, 1, 1, 0, 0, 0])
-    bdt_test = bdt.BinaryDecisionTree(max_depth=3)
+    bdt_test = BinaryDecisionTree(max_depth=3)
     bdt_test.fit(x, y)
     assert bdt_test.right is None
     assert bdt_test.left is None
