@@ -13,7 +13,7 @@ class KNearest:
         self.k_ = k
 
     def fit(self, *, features, targets):
-        #TODO check dimensions
+        # TODO: check dimensions
         self.train_features_ = features
         self.train_targets_ = targets
 
