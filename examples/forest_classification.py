@@ -78,11 +78,9 @@ def pca_and_pair_plot():
     pca_x = pcam_min.transform(scaled_x)
     labels = (list(range(N)) + ['species'])
     df = pd.DataFrame(np.hstack([pca_x, y[:, np.newaxis]]), columns=labels)
-    print(df.shape)
-    quit()
     sns.pairplot(df, hue='species', size=1.5)
     plt.show()
-pca_and_pair_plot()
+
 
 def with_pca():
     from endochrone.stats import scaling as fs
