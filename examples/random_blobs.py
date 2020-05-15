@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 from sklearn.model_selection import train_test_split
 
-from endochrone.classification.binary_tree import BinaryDecisionTree
-from endochrone.classification.naive_bayes import NaiveBayes
+from endochrone.classification import BinaryDecisionTree
+from endochrone.classification import NaiveBayes
 from endochrone.stats import scaling as fs
 from endochrone.stats.metrics import MulticlassMetrics as mcm
 

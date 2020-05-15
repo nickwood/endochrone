@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import Mock
 
 from endochrone.classification import binary_tree as bdt
+from endochrone.classification import BinaryDecisionTree
 from endochrone.utils import lazy_test_runner as ltr
 
 __author__ = "nickwood"

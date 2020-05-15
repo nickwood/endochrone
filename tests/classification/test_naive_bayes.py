@@ -4,6 +4,7 @@ import pytest
 
 from endochrone.utils import lazy_test_runner as ltr
 import endochrone.classification.naive_bayes as nb
+from endochrone.classification import NaiveBayes
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"

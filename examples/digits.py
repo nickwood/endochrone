@@ -6,7 +6,7 @@ from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from endochrone.classification import naive_knn as knn
+from endochrone.classification import KNearest
 from endochrone.stats import metrics
 from endochrone.decomposition import pca
 
@@ -36,29 +36,28 @@ if show_digits:
                 color='g')
     plt.show()
 
-Xtrain, Ytrain, Xtest, Ytest = train_test_split(digits.data, digits.target)
-
-# TODO refactor KNN so this isn't necessary
-Xtest = Xtest[:, np.newaxis]
-Ytest = Ytest[:, np.newaxis]
+Xtrain, Xtest, Ytrain, Ytest = train_test_split(digits.data, digits.target)
 
 # Test run to figure out how many components we should keep
 # TODO should be able to do this with a single model
+# TODO move this above test/train split
 pcam_test = pca.PCA()
 pcam_test.fit(Xtrain)
 cutoff = 0.97  # i.e. we want to retain this % of variance
 n_comp = np.argmax(np.cumsum(pcam_test.explained_variance_ratio_) > cutoff)
 
-# Now reduce our training set with this PCA model
+# Now reduce our features with this PCA model
 pcam = pca.PCA(n_components=n_comp)
-pcam.fit(Xtrain)
+pcam.fit(digits.data)
 pca_Xtrain = pcam.transform(Xtrain)
-pca_Ytrain = pcam.transform(Ytrain)
+pca_Xtest = pcam.transform(Xtest)
 
 # Try KNN to see if we're any good at classifying
-ypred = knn.classify(pca_Xtrain, Xtest, pca_Ytrain, k=3)
+knn_model = KNearest()
+knn_model.fit(features=pca_Xtrain, targets=Ytrain)
+ypred = knn_model.predict(features=pca_Xtest)
 acc = accuracy_score(Ytest, ypred)*100
-print("cut-off: %s \n n_comp: %s \n accuracy: %0.4f%%" % (cutoff, n_comp, acc))
+print("cut-off: %s \nn_comp: %s \naccuracy: %0.4f%%" % (cutoff, n_comp, acc))
 
 perf = metrics.MulticlassMetrics(Ytest, ypred)
 perf.print_confusion_matrix()

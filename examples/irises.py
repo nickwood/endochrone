@@ -50,15 +50,16 @@ def iris_naive_knn(n_runs=10):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score
     from endochrone.stats import scaling as fs
-    from endochrone.classification import naive_knn as knn
+    from endochrone.classification import KNearest
 
     s_i_data = fs.mean_norm(i_data)
     accuracy = []
 
     for i in range(n_runs):
-        s_Xtr, s_Xtest, Ytr, Ytest = train_test_split(s_i_data,
-                                                      i_target[:, np.newaxis])
-        ypred = knn.classify(s_Xtr, Ytr, s_Xtest, k=3)
+        s_Xtr, s_Xtest, Ytr, Ytest = train_test_split(s_i_data, i_target)
+        knn_model = KNearest()
+        knn_model.fit(features=s_Xtr, targets=Ytr)
+        ypred = knn_model.predict(features=s_Xtest)
         accuracy.append(accuracy_score(Ytest, ypred))
     print("mean accuracy over %s runs is %.4f" % (n_runs, np.mean(accuracy)))
 
@@ -99,7 +100,7 @@ def iris_pca():
 
 def iris_bdt():
     from sklearn.model_selection import train_test_split
-    from endochrone.classification.binary_tree import BinaryDecisionTree
+    from endochrone.classification import BinaryDecisionTree
     from endochrone.stats.metrics import MulticlassMetrics
 
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(i_data, i_target)
@@ -110,10 +111,7 @@ def iris_bdt():
     Ypred = i_bdt.predict(Xtest)
 
     metrics = MulticlassMetrics(Ytest, Ypred)
-    print("mac_prec:", metrics.macro_precision)
-    print("mac_recall:", metrics.macro_recall)
-    print("mac_f1:", metrics.macro_f1_score)
-    print("mic_ prec:", metrics.micro_precision)
+    print(metrics)
 
 
 iris_k_means()
