@@ -29,6 +29,8 @@ def lazy_test_runner(filename=None, verbose=False, printstdout=True):
 
     if __main__.__file__.endswith(r'pytest.exe\__main__.py'):
         return None
+    elif __main__.__file__.endswith(r'testing_tools\run_adapter.py'):
+        return None
 
     if filename is None:
         filename = os.path.abspath(__main__.__file__)
