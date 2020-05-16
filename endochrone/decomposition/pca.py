@@ -6,8 +6,8 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+# TODO import Base
 class PCA:
-
     def __init__(self, n_components=None):
         self.n_components = n_components
 

@@ -26,7 +26,7 @@ def test_2d_fit_and_predict():
 
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
-    assert classifier.n_feat_ == 3
+    assert classifier.n_features_ == 3
     assert np.all(list(classifier.classes_.keys()) == classes)
     assert np.all(classifier.means_ == pytest.approx(means))
     assert np.all(classifier.variances_ == pytest.approx(variances))
@@ -46,14 +46,14 @@ def test_2d_fit_and_predict():
         pytest.approx(0.0005377909183630023)
 
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp) == 1
+    assert classifier.predict(samp.reshape((1, 3))) == 1
 
     samps = np.array([[6, 130, 8], [5.9, 180, 11]])
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
 
 
 def test_1d_fit_and_predict():
-    X = np.array([5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75])
+    X = np.array([5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75])[:, np.newaxis]
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
     classifier = NaiveBayes()
@@ -65,7 +65,7 @@ def test_1d_fit_and_predict():
 
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
-    assert classifier.n_feat_ == 1
+    assert classifier.n_features_ == 1
     assert np.all(list(classifier.classes_.keys()) == classes)
     assert np.all(classifier.means_ == pytest.approx(means))
     assert np.all(classifier.variances_ == pytest.approx(variances))
@@ -74,14 +74,14 @@ def test_1d_fit_and_predict():
     samp = np.array([5.4])
 
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp) == 1
+    assert classifier.predict(samp.reshape((1, 1))) == 1
 
-    samps = np.array([5.4, 6])
+    samps = np.array([5.4, 6]).reshape((2, 1))
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
 
 
 def test_three_classes():
-    X = np.array([5.92, 5.88, 5.93, 5.2, 5, 5.1, 4.4, 4.6, 4.5])
+    X = np.array([5.92, 5.88, 5.93, 5.2, 5, 5.1, 4.4, 4.6, 4.5])[:, np.newaxis]
     Y = np.array([0, 0, 0, 1, 1, 1, 2, 2, 2])
 
     classifier = NaiveBayes()
@@ -94,14 +94,14 @@ def test_three_classes():
 
     assert classifier.n_classes_ == 3
     assert classifier.n_samples_ == 9
-    assert classifier.n_feat_ == 1
+    assert classifier.n_features_ == 1
     assert np.all(list(classifier.classes_.keys()) == classes)
     assert np.all(classifier.means_ == pytest.approx(means))
     assert np.all(classifier.variances_ == pytest.approx(variances))
     for i, name in classifier.classes_.items():
         assert classifier.priors_[i] == priors[name]
 
-    samps = np.array([5.9, 5.0, 4.8, 4.4])
+    samps = np.array([5.9, 5.0, 4.8, 4.4])[:, np.newaxis]
     assert np.all(classifier.predict(samps) == np.array([0, 1, 1, 2]))
 
 
@@ -138,7 +138,7 @@ def test_non_zero_indexed_classnames():
 
     samp = np.array([6, 130, 8])
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp) == 1
+    assert classifier.predict(samp.reshape((1, 3))) == 1
 
     samps = np.array([[6, 130, 8], [5.9, 180, 11]])
     assert np.all(classifier.predict(samps) == np.array([1, 2]))
@@ -157,7 +157,7 @@ def test_text_classes():
     samp = np.array([6, 130, 8])
 
     assert classifier.predict_single(samp) == 'female'
-    assert classifier.predict(samp) == 'female'
+    assert classifier.predict(samp.reshape((1, 3))) == 'female'
 
     for i, name in classifier.classes_.items():
         assert classifier.priors_[i] == priors[name]
@@ -167,7 +167,7 @@ def test_text_classes():
 
 
 def test_invalid_priors():
-    X = np.array([5.92, 5.75])
+    X = np.array([5.92, 5.75]).reshape((2, 1))
     Y = np.array([0, 1])
 
     classifier = NaiveBayes()

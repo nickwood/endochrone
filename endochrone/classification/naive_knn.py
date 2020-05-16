@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
+from endochrone import Base
 from endochrone.stats.measures import euclidean_dist
 
 __author__ = "nickwood"
@@ -8,16 +9,17 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class KNearest:
+class KNearest(Base):
     def __init__(self, *, k=3):
         self.k_ = k
 
     def fit(self, *, features, targets):
-        # TODO: check dimensions
+        self.validate_fit(features=features, targets=targets)
         self.train_features_ = features
         self.train_targets_ = targets
 
     def predict(self, *, features):
+        self.validate_predict(features=features)
         return np.array([self.classify_point(point=p) for p in features])
 
     def classify_point(self, *, point):

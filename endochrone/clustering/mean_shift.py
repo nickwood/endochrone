@@ -9,6 +9,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+# TODO import Base
 class MeanShift:
     def __init__(self, bandwidth=None, kernel='flat'):
         self.bandwidth = bandwidth

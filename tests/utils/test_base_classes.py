@@ -21,11 +21,13 @@ def test_validate_fit():
 
     # invalid Y dimensions
     with pytest.raises(ValueError):
-        test_base.validate_fit(features=X[:, np.newaxis], targets=Y[:, np.newaxis])
+        targ = Y[:, np.newaxis]
+        test_base.validate_fit(features=X[:, np.newaxis], targets=targ)
 
     # incompatible sizes
     with pytest.raises(ValueError):
-        test_base.validate_fit(features=X[:, np.newaxis], targets=np.array([0, 1, 1]))
+        targ = np.array([0, 1, 1])
+        test_base.validate_fit(features=X[:, np.newaxis], targets=targ)
 
     test_base.validate_fit(features=X[:, np.newaxis], targets=Y)
     assert test_base.n_features_ == 1

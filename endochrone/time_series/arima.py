@@ -2,6 +2,7 @@
 from functools import partial
 import numpy as np
 
+from endochrone import Base
 from endochrone.regression import LinearRegression
 
 __author__ = "nickwood"
@@ -36,7 +37,7 @@ class ArModel(LinearRegression):
         return np.array(x[self.order:])
 
 
-class MaModel:
+class MaModel(Base):
     def __init__(self, order=1):
         self.order = order
 

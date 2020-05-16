@@ -14,12 +14,12 @@ def test_fit_and_predict():
     X_train = np.transpose([[1, 2, 3, 7, 8, 9, 10],
                             [3, 4, 5, 1, 2, 3, 4],
                             [3, 4, 5, 1, 2, 3, 4]])
-    Y_train = np.transpose([0, 0, 0, 1, 1, 1, 1])
+    Y_train = np.array([0, 0, 0, 1, 1, 1, 1])
 
     X_test = np.transpose([[1, 2.5, 3.5, 8, 8.9, 9.9, 10.2],
                            [2, 3.1, 4.2, 0.5, 2.1, 2.6, 4],
                            [2.9, 3.8, 5.2, 0.6, 1.6, 3, 4]])
-    Y_test = np.transpose([0, 0, 0, 1, 1, 1, 1])
+    Y_test = np.array([0, 0, 0, 1, 1, 1, 1])
 
     knn_model = KNearest()
     knn_model.fit(features=X_train, targets=Y_train)
@@ -31,7 +31,7 @@ def test_classify_point():
     X_train = np.transpose([[1, 2, 3, 7, 8, 9, 10],
                             [3, 4, 5, 1, 2, 3, 4],
                             [3, 4, 5, 1, 2, 3, 4]])
-    Y_train = np.transpose([[0, 0, 0, 1, 1, 1, 1]])
+    Y_train = np.array([0, 0, 0, 1, 1, 1, 1])
 
     knn_model = KNearest()
     knn_model.fit(features=X_train, targets=Y_train)

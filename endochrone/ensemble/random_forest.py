@@ -2,6 +2,7 @@
 import numpy as np
 import time
 
+from endochrone import Base
 from endochrone.classification import BinaryDecisionTree
 
 __author__ = "nickwood"
@@ -9,7 +10,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class RandomForest:
+class RandomForest(Base):
     def __init__(self, n_trees, sample_size=None, feat_per_tree=None,
                  max_tree_depth=None):
         self.n_trees = n_trees
@@ -19,6 +20,8 @@ class RandomForest:
         self.trees = []
 
     def fit(self, x, y, debug=False):
+        self.validate_fit(features=x, targets=y)
+
         n_samples = x.shape[0]
         if self.samp_per_tree is None:
             self.samp_per_tree = int(2 * n_samples / self.n_trees)
@@ -40,6 +43,7 @@ class RandomForest:
         return self
 
     def predict(self, x):
+        self.validate_predict(features=x)
         predictions = (np.transpose([t.predict(x) for t in self.trees]))
         return np.array([consensus(votes) for votes in predictions])
 

@@ -9,6 +9,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
+# TODO refactor into Base subclass
 def calculate(data, k=3, centroids=None):
     "return k centroids ordered by 1st coordinate"
     if centroids is None:

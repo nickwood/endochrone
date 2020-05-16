@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 import warnings
 
+from endochrone import Base
 from endochrone.optimisation import BatchGradientDescent
 
 __author__ = "nickwood"
@@ -10,7 +11,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class LinearRegression:
+class LinearRegression(Base):
     def __init__(self, *, method='inv_covariance', calculate_residuals=False,
                  params={}):
         '''
@@ -29,10 +30,7 @@ class LinearRegression:
         self.params = params
 
     def fit(self, X_train, Y_train):
-        if Y_train.ndim > 1:
-            raise ValueError("Y_train must be 1 dimensional")
-        if X_train.ndim == 1:
-            raise ValueError("X_train must be 2+ dimensional")
+        self.validate_fit(features=X_train, targets=Y_train)
 
         if self.method == 'inv_covariance':
             self.fit_inv_covariance(X_train, Y_train)
@@ -71,6 +69,7 @@ class LinearRegression:
             return False
 
     def predict(self, X_test):
+        self.validate_predict(features=X_test)
         return evaluate(X=X_test, **self.coef_dict_)
 
     def score(self, X_true, Y_true):

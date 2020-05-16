@@ -2,6 +2,7 @@
 from collections import Counter
 import numpy as np
 
+from endochrone import Base
 from endochrone.optimisation.discrete_annealing import find_minimum
 
 __author__ = "nickwood"
@@ -9,7 +10,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class BinaryDecisionTree:
+class BinaryDecisionTree(Base):
     def __init__(self, depth=1, max_depth=None):
         self.max_depth = max_depth
         self.depth = depth
@@ -18,6 +19,8 @@ class BinaryDecisionTree:
         self.right = None
 
     def fit(self, x, y):
+        self.validate_fit(features=x, targets=y)
+
         if len(set(y)) == 1:
             self.result = y[0]
             self.size = len(y)
@@ -48,6 +51,7 @@ class BinaryDecisionTree:
         self.right.fit(rx, ry)
 
     def predict(self, x):
+        self.validate_predict(features=x)
         return np.array([self.predict_point(p) for p in x])
 
     def predict_point(self, p):
