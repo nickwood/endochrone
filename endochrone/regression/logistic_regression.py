@@ -3,6 +3,7 @@ from functools import partial
 import numpy as np
 import warnings
 
+from endochrone import Base
 from endochrone.optimisation import BatchGradientDescent
 
 __author__ = "nickwood"
@@ -10,7 +11,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class LogisticRegression:
+class LogisticRegression(Base):
     def __init__(self, *, gd_params={}, suppress_warnings=False):
         '''
         gd_params is a dict specifying parameters to be passewd to the gradient
@@ -21,15 +22,7 @@ class LogisticRegression:
         self.coef_dict_ = None
 
     def fit(self, X_train, Y_train):
-        if Y_train.ndim > 1:
-            raise ValueError("Y_train must be 1 dimensional")
-        if X_train.ndim == 1:
-            raise ValueError("X_train must be 2+ dimensional")
-        if np.any(np.unique(Y_train) != np.arange(0, 2)):
-            raise ValueError("Y_train must contain only 0 or 1")
-        if X_train.shape[0] != Y_train.shape[0]:
-            raise ValueError("X and Y must have same number of rows")
-
+        self.validate_fit(features=X_train, targets=Y_train)
         self.fit_gradient_desc(X_train, Y_train)
 
     def fit_gradient_desc(self, X_train, Y_train):
@@ -42,13 +35,7 @@ class LogisticRegression:
         self.coef_dict_ = gd.min_args
 
     def predict(self, X_test):
-        if self.coef_dict_ is None:
-            raise AttributeError("Model has not been fit yet")
-        if X_test.ndim == 1:
-            raise ValueError("X_test must be 2+ dimensional")
-        if X_test.shape[1] + 1 != len(self.coef_dict_.keys()):
-            raise ValueError("X_test has wrong number of columns")
-
+        self.validate_predict(features=X_test)
         h_x = evaluate(X=X_test, **self.coef_dict_)
         return np.round(h_x).astype(int)
 
