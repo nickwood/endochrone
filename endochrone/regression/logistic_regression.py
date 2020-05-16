@@ -20,6 +20,7 @@ class LogisticRegression(Base):
         self.gd_params = gd_params
         self.suppress_warnings = suppress_warnings
         self.coef_dict_ = None
+        super().__init__(properties={'binary_targets': True})
 
     def fit(self, X_train, Y_train):
         self.validate_fit(features=X_train, targets=Y_train)

@@ -2,6 +2,7 @@
 import numpy as np
 from functools import partial
 
+from endochrone import Base
 from endochrone.stats.measures import euclidean_dist as dist
 
 __author__ = "nickwood"
@@ -9,8 +10,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-# TODO import Base
-class MeanShift:
+class MeanShift(Base):
     def __init__(self, bandwidth=None, kernel='flat'):
         self.bandwidth = bandwidth
         if kernel == 'flat':
@@ -19,8 +19,10 @@ class MeanShift:
             self.kernel = partial(gaussian)
         else:
             raise ValueError("Unknown Kernel: %s" % kernel)
+        super().__init__(properties={'requires_targets': False})
 
     def fit(self, X):
+        self.validate_fit(features=X)
         points = np.copy(X).astype(float)
         prev = None
         bw = self.bandwidth
@@ -34,7 +36,7 @@ class MeanShift:
         return self.centres_, self.labels_
 
     def predict(self, X):
-        # if self.centres_ is None: raise error
+        self.validate_predict(features=X)
         return np.array([self.predict_point(p) for p in X])
 
     def predict_point(self, p):
@@ -57,27 +59,12 @@ def flat(X, p, bandwidth):
 
 
 def gaussian(X, p, bandwidth):
-    if X.ndim == 1:
-        return gaussian_1d(X, p, bandwidth)
-    elif X.ndim == 2:
-        return gaussian_2d(X, p, bandwidth)
+    if X.ndim == 2:
+        neighb = neighbours(X, p, bandwidth)
+        sq_distances = np.sum((neighb - p)**2, axis=1)
+        exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
+        numerator = np.sum(neighb * exponentials[:, np.newaxis], axis=0)
+        denominator = np.sum(exponentials)
+        return numerator/denominator
     else:
-        raise NotImplementedError("X dimension is too high, expected 1 or 2")
-
-
-def gaussian_1d(X, p, bandwidth):
-    neighb = neighbours(X, p, bandwidth)
-    sq_distances = (neighb - p)**2
-    exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
-    numerator = np.sum(neighb * exponentials, axis=0)
-    denominator = np.sum(exponentials)
-    return numerator/denominator
-
-
-def gaussian_2d(X, p, bandwidth):
-    neighb = neighbours(X, p, bandwidth)
-    sq_distances = np.sum((neighb - p)**2, axis=1)
-    exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
-    numerator = np.sum(neighb * exponentials[:, np.newaxis], axis=0)
-    denominator = np.sum(exponentials)
-    return numerator/denominator
+        raise NotImplementedError("X dimension is too high, expected 2")

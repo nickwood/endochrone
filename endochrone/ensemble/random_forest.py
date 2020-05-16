@@ -18,6 +18,7 @@ class RandomForest(Base):
         self.feat_per_tree = feat_per_tree
         self.max_tree_depth = max_tree_depth
         self.trees = []
+        super().__init__()
 
     def fit(self, x, y, debug=False):
         self.validate_fit(features=x, targets=y)

@@ -17,6 +17,7 @@ class BinaryDecisionTree(Base):
         self.result = None
         self.left = None
         self.right = None
+        super().__init__()
 
     def fit(self, x, y):
         self.validate_fit(features=x, targets=y)

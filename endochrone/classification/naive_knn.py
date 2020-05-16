@@ -12,6 +12,7 @@ __license__ = "mit"
 class KNearest(Base):
     def __init__(self, *, k=3):
         self.k_ = k
+        super().__init__()
 
     def fit(self, *, features, targets):
         self.validate_fit(features=features, targets=targets)

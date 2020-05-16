@@ -146,8 +146,8 @@ def test_exceptions():
         test_lr.fit(X_train=X[:, np.newaxis], Y_train=Y[:, np.newaxis])
 
     # invalid Y values
-    # with pytest.raises(ValueError):
-    #     test_lr.fit(X_train=X[:, np.newaxis], Y_train=np.array([0, 1, 2, 3]))
+    with pytest.raises(ValueError):
+        test_lr.fit(X_train=X[:, np.newaxis], Y_train=np.array([0, 1, 2, 3]))
 
     # model not fit
     with pytest.raises(RuntimeError):

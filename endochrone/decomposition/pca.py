@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
+from endochrone import Base
+
 __author__ = "nickwood"
 __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-# TODO import Base
-class PCA:
+class PCA(Base):
     def __init__(self, n_components=None):
         self.n_components = n_components
+        super().__init__(properties={'requires_targets': False})
 
     def fit(self, X_train):
+        self.validate_fit(features=X_train)
         if self.n_components is None:
             self.n_components == X_train.shape[1]
 
@@ -31,6 +34,7 @@ class PCA:
         return self
 
     def transform(self, X_data):
+        self.validate_predict(features=X_data)
         return (X_data - self.mean_)@np.transpose(self.components_)
 
     def inverse_transform(self, X_trans):

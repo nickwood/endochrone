@@ -46,7 +46,7 @@ def test_2d_fit_and_predict():
         pytest.approx(0.0005377909183630023)
 
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp.reshape((1, 3))) == 1
+    assert classifier.predict(samp.reshape(1, 3)) == 1
 
     samps = np.array([[6, 130, 8], [5.9, 180, 11]])
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
@@ -74,9 +74,9 @@ def test_1d_fit_and_predict():
     samp = np.array([5.4])
 
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp.reshape((1, 1))) == 1
+    assert classifier.predict(samp.reshape(1, 1)) == 1
 
-    samps = np.array([5.4, 6]).reshape((2, 1))
+    samps = np.array([5.4, 6]).reshape(2, 1)
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
 
 
@@ -138,7 +138,7 @@ def test_non_zero_indexed_classnames():
 
     samp = np.array([6, 130, 8])
     assert classifier.predict_single(samp) == 1
-    assert classifier.predict(samp.reshape((1, 3))) == 1
+    assert classifier.predict(samp.reshape(1, 3)) == 1
 
     samps = np.array([[6, 130, 8], [5.9, 180, 11]])
     assert np.all(classifier.predict(samps) == np.array([1, 2]))
@@ -157,7 +157,7 @@ def test_text_classes():
     samp = np.array([6, 130, 8])
 
     assert classifier.predict_single(samp) == 'female'
-    assert classifier.predict(samp.reshape((1, 3))) == 'female'
+    assert classifier.predict(samp.reshape(1, 3)) == 'female'
 
     for i, name in classifier.classes_.items():
         assert classifier.priors_[i] == priors[name]
@@ -167,7 +167,7 @@ def test_text_classes():
 
 
 def test_invalid_priors():
-    X = np.array([5.92, 5.75]).reshape((2, 1))
+    X = np.array([5.92, 5.75]).reshape(2, 1)
     Y = np.array([0, 1])
 
     classifier = NaiveBayes()

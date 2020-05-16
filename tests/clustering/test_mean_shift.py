@@ -12,9 +12,11 @@ __license__ = "mit"
 
 
 def test_neighbours():
-    X = np.arange(0, 10, 1)
-    assert np.all(ms.neighbours(X, 3.5, 2) == np.array([2, 3, 4, 5]))
-    assert np.all(ms.neighbours(X, 5, 3) == np.array([2, 3, 4, 5, 6, 7, 8]))
+    X = np.arange(0, 10, 1).reshape(10, 1)
+    exp = np.array([2, 3, 4, 5]).reshape(4, 1)
+    assert np.all(ms.neighbours(X, 3.5, 2) == exp)
+    exp = np.array([2, 3, 4, 5, 6, 7, 8]).reshape(7, 1)
+    assert np.all(ms.neighbours(X, 5, 3) == exp)
 
     X2d = np.arange(0, 20, 1).reshape(10, 2)
     exp = np.array([[0, 1], [2, 3], [4, 5]])
@@ -45,18 +47,13 @@ def test_flat_kernel():
 
 
 def test_gaussian_kernel():
-    X1 = np.arange(1, 4)
-    p = np.array([2])
-    assert ms.gaussian(X1, p, 1) == 2
-    assert ms.gaussian_1d(X1, p, 1) == pytest.approx(2)
-
     X2d = np.arange(0, 20).reshape(10, 2)
     p = np.array([9, 9])
     exp = np.array([8.88934389, 9.88934389])
-    assert np.all(ms.gaussian_2d(X2d, p, 3) == pytest.approx(exp))
+    assert np.all(ms.gaussian(X2d, p, 3) == pytest.approx(exp))
     assert np.all(ms.gaussian(X2d, p, 3) == pytest.approx(exp))
     exp = np.array([8.15192519, 9.15192519])
-    assert np.all(ms.gaussian_2d(X2d, p, 4) == pytest.approx(exp))
+    assert np.all(ms.gaussian(X2d, p, 4) == pytest.approx(exp))
     assert np.all(ms.gaussian(X2d, p, 4) == pytest.approx(exp))
 
     with pytest.raises(NotImplementedError):
@@ -66,7 +63,7 @@ def test_gaussian_kernel():
 
 
 def test_1d_flat_fit_and_predict():
-    X1 = np.arange(0, 6, 1)
+    X1 = np.arange(0, 6, 1).reshape(6, 1)
     ms.flat = Mock(wraps=ms.flat)
     clusters = ms.MeanShift(bandwidth=2.5)
     centres1, labels1 = clusters.fit(X1)
@@ -76,10 +73,10 @@ def test_1d_flat_fit_and_predict():
     assert clusters.predict_point(np.array(3)) == 0
     assert clusters.predict_point(np.array(14)) == 0
 
-    X2 = np.hstack([np.arange(0, 3, 1), np.arange(6, 9, 1)])
+    X2 = np.hstack([np.arange(0, 3, 1), np.arange(6, 9, 1)]).reshape(6, 1)
     clusters = ms.MeanShift(bandwidth=2, kernel='flat')
     centres2, labels2 = clusters.fit(X2)
-    assert np.all(centres2 == np.array([1, 7]))
+    assert np.all(centres2 == np.array([1, 7]).reshape(2, 1))
     assert np.all(labels2 == np.array([0, 1]))
     assert clusters.predict_point(np.array(3)) == 0
     assert clusters.predict_point(np.array(5)) == 1
@@ -135,31 +132,32 @@ def test_nd_flat_fit_and_predict():
 
 
 def test_1d_gaussian_fit_and_predict():
-    X1 = np.arange(0, 6, 1)
+    X1 = np.arange(0, 6, 1).reshape(6, 1)
+    ms.gaussian = Mock(wraps=ms.gaussian)
     clusters = ms.MeanShift(bandwidth=2, kernel='gaussian')
-    ms.gaussian_1d = Mock(wraps=ms.gaussian_1d)
     centres1, labels1 = clusters.fit(X1)
-    ms.gaussian_1d.assert_called()
+    ms.gaussian.assert_called()
     assert centres1 == np.array([2.5])
     assert labels1 == np.array([0])
 
-    X2 = np.hstack([np.arange(0, 3, 1), np.arange(6, 9, 1)])
+    X2 = np.hstack([np.arange(0, 3, 1), np.arange(6, 9, 1)]).reshape(6, 1)
     clusters2 = ms.MeanShift(bandwidth=2, kernel='gaussian')
     centres2, labels2 = clusters2.fit(X2)
-    assert np.all(centres2 == pytest.approx(np.array([1, 7])))
+    assert np.all(centres2 == pytest.approx(np.array([1, 7]).reshape(2, 1)))
     assert np.all(labels2 == np.array([0, 1]))
 
-    to_predict = np.arange(3, 7)
+    to_predict = np.arange(3, 7).reshape(4, 1)
     assert np.all(clusters.predict(to_predict) == 0)
-    assert np.all(clusters2.predict(to_predict) == np.array([0, 0, 1, 1]))
+    exp = np.array([0, 0, 1, 1])
+    assert np.all(clusters2.predict(to_predict) == exp)
 
 
 def test_2d_gaussian_fit_and_predict():
     X = np.arange(0, 60).reshape(30, 2)
+    ms.gaussian = Mock(wraps=ms.gaussian)
     clusters = ms.MeanShift(bandwidth=23, kernel='gaussian')
-    ms.gaussian_2d = Mock(wraps=ms.gaussian_2d)
     centres, labels = clusters.fit(X)
-    ms.gaussian_2d.assert_called()
+    ms.gaussian.assert_called()
     exp = np.arange(29., 31.).reshape(1, 2)
     assert np.all(centres == pytest.approx(exp))
     assert labels == np.arange(0, 1)

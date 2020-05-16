@@ -66,6 +66,8 @@ def test_invalid_dimensions():
     with pytest.raises(ValueError):
         model.fit(X_train.ravel(), Y_train)
 
+    # model.fit(X_train, Y_train[:, np.newaxis])
+
 
 def test_nd_nonzero_intercept(n_samples=1000, dim=20):
     X_train = np.random.uniform(100, size=(n_samples, dim))

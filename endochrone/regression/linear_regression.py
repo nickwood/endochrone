@@ -28,6 +28,7 @@ class LinearRegression(Base):
             raise ValueError('Unknown method: %s' % method)
         self.method = method
         self.params = params
+        super().__init__()
 
     def fit(self, X_train, Y_train):
         self.validate_fit(features=X_train, targets=Y_train)

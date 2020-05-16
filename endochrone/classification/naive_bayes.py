@@ -9,6 +9,9 @@ __license__ = "mit"
 
 
 class NaiveBayes(Base):
+    def __init__(self):
+        super().__init__()
+
     def fit(self, x, y, pop_priors=None):
         self.validate_fit(features=x, targets=y)
 
