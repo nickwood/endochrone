@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pytest
-import random
 
 from endochrone.regression import logistic_regression as lr
 from endochrone.regression import LogisticRegression
