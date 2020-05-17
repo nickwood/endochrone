@@ -2,6 +2,7 @@
 import numpy as np
 import random
 
+from endochrone import Base
 from endochrone.stats.measures import euclidean_dist
 
 __author__ = "nickwood"
@@ -9,43 +10,43 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-# TODO refactor into Base subclass
-def calculate(data, k=3, centroids=None):
-    "return k centroids ordered by 1st coordinate"
-    if centroids is None:
-        centroids = initial_centroids(data, k)
-    old_centroids = np.zeros(centroids.shape)
-    while np.any(old_centroids != centroids):
-        old_centroids = centroids
-        centroids = calculate_step(data, centroids, k)
+class KMeans(Base):
+    def __init__(self, k=3):
+        self.n_centroids_ = k
+        super().__init__(properties={'requires_targets': False})
 
-    return centroids[np.argsort(centroids[:, 0])]
+    def fit(self, *, features, initial_centroids=None):
+        self.validate_fit(features=features)
+        if initial_centroids is None:
+            self.centroids = self.forgy_centroids_(features=features)
+        else:
+            self.centroids = initial_centroids
 
+        old_centroids = np.zeros(self.centroids.shape)
+        while np.any(old_centroids != self.centroids):
+            old_centroids = self.centroids
+            self.centroids = self.calculate_step(features=features)
 
-def calculate_step(data, old_centroids, k=3):
-    assignments = nearest_centroids(data, old_centroids)
-    new_centroids = recalculate_centroids(data, assignments, k)
-    return new_centroids
+    def forgy_centroids_(self, *, features):
+        k = self.n_centroids_
+        n_samples = features.shape[0]
+        _indexes = np.random.choice(range(n_samples), k, replace=False)
+        return features[_indexes, :]
 
+    def calculate_step(self, *, features):
+        n_c = self.nearest_centroids(features=features)
+        return self.recalculate_centroids(features=features, assignments=n_c)
 
-def initial_centroids(data, k=3):
-    if data.shape[1] != 2 or data.shape[0] < k:
-        raise ValueError
+    def nearest_centroids(self, *, features):
+        return np.array([self.nearest_centroid(point=p) for p in features])
 
-    rand_idx = random.sample(range(data.shape[0]), k)
-    return data[rand_idx, :]
+    def nearest_centroid(self, *, point):
+        return np.argmin([euclidean_dist(point, c) for c in self.centroids])
 
+    def recalculate_centroids(self, *, features, assignments):
+        return np.array([np.mean(features[assignments == i], axis=0)
+                         for i in range(self.n_centroids_)])
 
-def nearest_centroid(point, centroids):
-    return np.argmin([euclidean_dist(point, c) for c in centroids])
-
-
-def nearest_centroids(data, centroids):
-    return np.transpose([[nearest_centroid(p, centroids) for p in data]])
-
-
-def recalculate_centroids(data, assignments, k=3):
-    centroids = np.zeros((k, 2), dtype=float)
-    for i in range(k):
-        centroids[i, :] = np.mean(data[assignments[:, 0] == i], axis=0)
-    return centroids
+    def predict(self, *, features):
+        self.validate_predict(features=features)
+        return self.nearest_centroids(features=features)

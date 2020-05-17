@@ -17,7 +17,7 @@ axes = iris['feature_names']
 def iris_k_means():
     from itertools import combinations
     from math import factorial as fac
-    from endochrone.clustering import naive_k_means as nkm
+    from endochrone.clustering import KMeans
     from endochrone.stats import scaling as fs
 
     num_features = i_data.shape[1]
@@ -35,12 +35,15 @@ def iris_k_means():
         s_data = fs.mean_norm(r_data)
         # s_data = fs.min_max(r_data)
 
-        s_centroids = nkm.calculate(s_data, 3)
-        assignments = nkm.nearest_centroids(s_data, s_centroids)
-        r_centroids = nkm.recalculate_centroids(r_data, assignments, 3)
+        kmeans_model = KMeans(k=3)
+        kmeans_model.fit(features=s_data)
+        assignments = kmeans_model.nearest_centroids(features=s_data)
+        s_centroids = kmeans_model.centroids
 
-        plt.scatter(X, Y, c=assignments, s=3, marker='d', cmap='cool')
-        plt.scatter(r_centroids[:, 0], r_centroids[:, 1], marker='o', c="b")
+        s_x = s_data[:, 0]
+        s_y = s_data[:, 1]
+        plt.scatter(s_x, s_y, c=assignments, s=3, marker='d', cmap='cool')
+        plt.scatter(s_centroids[:, 0], s_centroids[:, 1], marker='o', c="b")
         i += 1
 
     plt.show()
@@ -115,6 +118,6 @@ def iris_bdt():
 
 
 iris_k_means()
-iris_naive_knn()
-iris_pca()
-iris_bdt()
+# iris_naive_knn()
+# iris_pca()
+# iris_bdt()
