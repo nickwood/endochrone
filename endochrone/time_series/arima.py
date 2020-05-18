@@ -30,7 +30,7 @@ class ArModel(LinearRegression):
             N = len(x)
         else:
             N = len(x) - 1
-        lags = [x[o-l-1:N-l, np.newaxis] for l in range(self.order)]
+        lags = [x[o-lag-1:N-lag, np.newaxis] for lag in range(self.order)]
         return np.hstack(lags)
 
     def generate_targets(self, x):

@@ -30,7 +30,7 @@ class BatchGradientDescent:
             x_prev = x_next
             t += 1
             jac_x = approx_jacobian([func], x_prev)[0]
-            
+
             f_x_prev = func(**x_prev)
             x_prev_vals = np.fromiter(x_prev.values(), dtype=float)
 

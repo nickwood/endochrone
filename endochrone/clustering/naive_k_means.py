@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import random
 
 from endochrone import Base
 from endochrone.stats.measures import euclidean_dist
