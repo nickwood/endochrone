@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from endochrone.classification import BinaryDecisionTree
 from endochrone.classification import NaiveBayes
-from endochrone.stats import scaling as fs
+from endochrone.stats.scaling import FeatureScaling
 from endochrone.stats.metrics import MulticlassMetrics as mcm
 
 __author__ = "nickwood"
@@ -27,7 +27,8 @@ def binary_classifier(plot=True):
 def naive_bayes(plot=True):
     x, y = make_blobs(n_samples=4500, n_features=5, cluster_std=3, centers=15)
 
-    x = fs.mean_norm(x)
+    scale_model = FeatureScaling(method='mean_norm')
+    x = scale_model.fit_and_transform(features=x)
     if plot:
         plt.scatter(x[:, 0], x[:, 1], c=y)
         plt.show()
@@ -47,4 +48,4 @@ def naive_bayes(plot=True):
 
 
 # binary_classifier(plot=False)
-naive_bayes(plot=False)
+naive_bayes(plot=True)

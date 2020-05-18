@@ -18,7 +18,7 @@ def iris_k_means():
     from itertools import combinations
     from math import factorial as fac
     from endochrone.clustering import KMeans
-    from endochrone.stats import scaling as fs
+    from endochrone.stats.scaling import FeatureScaling
 
     num_features = i_data.shape[1]
     num_charts = fac(num_features) // fac(2) // fac(num_features-2)
@@ -32,18 +32,17 @@ def iris_k_means():
 
         # 'r_' denotes 'raw' space, 's_' denotes scaled space
         r_data = np.concatenate([X, Y], axis=1)
-        s_data = fs.mean_norm(r_data)
-        # s_data = fs.min_max(r_data)
+        scale_model = FeatureScaling(method='mean_norm')
+        s_data = scale_model.fit_and_transform(features=r_data)
 
         kmeans_model = KMeans(k=3)
         kmeans_model.fit(features=s_data)
         assignments = kmeans_model.nearest_centroids(features=s_data)
         s_centroids = kmeans_model.centroids
+        r_centroids = scale_model.reverse(features=s_centroids)
 
-        s_x = s_data[:, 0]
-        s_y = s_data[:, 1]
-        plt.scatter(s_x, s_y, c=assignments, s=3, marker='d', cmap='cool')
-        plt.scatter(s_centroids[:, 0], s_centroids[:, 1], marker='o', c="b")
+        plt.scatter(X, Y, c=assignments, s=3, marker='d', cmap='cool')
+        plt.scatter(r_centroids[:, 0], r_centroids[:, 1], marker='o', c="b")
         i += 1
 
     plt.show()
@@ -52,10 +51,11 @@ def iris_k_means():
 def iris_naive_knn(n_runs=10):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import accuracy_score
-    from endochrone.stats import scaling as fs
+    from endochrone.stats.scaling import FeatureScaling
     from endochrone.classification import KNearest
 
-    s_i_data = fs.mean_norm(i_data)
+    scale_model = FeatureScaling(method='z_score')
+    s_i_data = scale_model.fit_and_transform(features=i_data)
     accuracy = []
 
     for i in range(n_runs):
@@ -117,7 +117,7 @@ def iris_bdt():
     print(metrics)
 
 
-iris_k_means()
-# iris_naive_knn()
+# iris_k_means()
+iris_naive_knn()
 # iris_pca()
 # iris_bdt()

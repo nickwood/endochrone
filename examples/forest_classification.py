@@ -57,7 +57,7 @@ def without_pca():
 
 
 def pca_and_pair_plot():
-    from endochrone.stats import scaling as fs
+    from endochrone.stats.scaling import FeatureScaling
     from endochrone.decomposition.pca import PCA
 
     global x
@@ -70,7 +70,8 @@ def pca_and_pair_plot():
         x = x[:, features_to_keep]
 
     # first we rescale to stop large floats dominating categories
-    scaled_x = fs.mean_norm(x)
+    scale_model = FeatureScaling(method='z_score')
+    scaled_x = scale_model.fit_and_transform(features=x)
 
     N = 3
     pcam_min = PCA(n_components=N)
@@ -78,12 +79,12 @@ def pca_and_pair_plot():
     pca_x = pcam_min.transform(scaled_x)
     labels = (list(range(N)) + ['species'])
     df = pd.DataFrame(np.hstack([pca_x, y[:, np.newaxis]]), columns=labels)
-    sns.pairplot(df, hue='species', size=1.5)
+    sns.pairplot(df, hue='species', height=1.5)
     plt.show()
 
 
 def with_pca():
-    from endochrone.stats import scaling as fs
+    from endochrone.stats.scaling import FeatureScaling
     from endochrone.decomposition.pca import PCA
 
     global x
@@ -96,7 +97,8 @@ def with_pca():
         x = x[:, features_to_keep]
 
     # first we rescale to stop large floats dominating categories
-    scaled_x = fs.mean_norm(x)
+    scale_model = FeatureScaling(method='z_score')
+    scaled_x = scale_model.fit_and_transform(features=x)
 
     # Then build a test PCA model so we can figure out how many components we
     # want
@@ -175,6 +177,6 @@ def visualise_entropies():
 
 
 # without_pca()
-# pca_and_pair_plot()
-with_pca()
+pca_and_pair_plot()
+# with_pca()
 # visualise_entropies()
