@@ -16,7 +16,7 @@ classification
 <!-- * binary decision tree -->
 <!-- * random forest -->
 <!-- * naive bayes -->
-* logistic regression
+<!-- * logistic regression -->
 * optimal margin classifier / Support vector machine
 * improve knn - tomek links & consistent subsets... - quick
 * naive bayes + laplace moving - quick
