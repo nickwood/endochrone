@@ -11,22 +11,6 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-def test_neighbours():
-    X = np.arange(0, 10, 1).reshape(10, 1)
-    exp = np.array([2, 3, 4, 5]).reshape(4, 1)
-    assert np.all(ms.neighbours(X, 3.5, 2) == exp)
-    exp = np.array([2, 3, 4, 5, 6, 7, 8]).reshape(7, 1)
-    assert np.all(ms.neighbours(X, 5, 3) == exp)
-
-    X2d = np.arange(0, 20, 1).reshape(10, 2)
-    exp = np.array([[0, 1], [2, 3], [4, 5]])
-    assert np.all(ms.neighbours(X2d, [3.5, 2.3], 4.5) == exp)
-
-    X3d = np.arange(0, 30, 1).reshape(10, 3)
-    exp = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-    assert np.all(ms.neighbours(X3d, [3.5, 2.3, 4.2], 8.5) == exp)
-
-
 def test_flat_kernel():
     X = np.arange(0, 10)
     p = np.array([4.5])

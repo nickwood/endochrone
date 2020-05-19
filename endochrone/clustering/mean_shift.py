@@ -4,6 +4,7 @@ from functools import partial
 
 from endochrone import Base
 from endochrone.stats.measures import euclidean_dist as dist
+from endochrone.stats.measures import neighbours
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -46,24 +47,19 @@ class MeanShift(Base):
             return np.argmin([dist(p, c) for c in self.centres_])
 
 
-def neighbours(X, p, bandwidth):
-    '''Returns a list of points in "X" that are within a distance "bandwidth"
-    of point "p"'''
-    return X[np.array([dist(p, comp) for comp in X]) <= bandwidth]
-
-
 def flat(X, p, bandwidth):
     '''Return the centre of mass - i.e. mean - of points in X within
     neighbourhood = bandwidth'''
-    return np.mean(neighbours(X, p, bandwidth), axis=0, keepdims=True)
+    neighbours_ = neighbours(X=X, p=p, bandwidth=bandwidth)
+    return np.mean(neighbours_, axis=0, keepdims=True)
 
 
 def gaussian(X, p, bandwidth):
     if X.ndim == 2:
-        neighb = neighbours(X, p, bandwidth)
-        sq_distances = np.sum((neighb - p)**2, axis=1)
+        neighb_ = neighbours(X=X, p=p, bandwidth=bandwidth)
+        sq_distances = np.sum((neighb_ - p)**2, axis=1)
         exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
-        numerator = np.sum(neighb * exponentials[:, np.newaxis], axis=0)
+        numerator = np.sum(neighb_ * exponentials[:, np.newaxis], axis=0)
         denominator = np.sum(exponentials)
         return numerator/denominator
     else:
