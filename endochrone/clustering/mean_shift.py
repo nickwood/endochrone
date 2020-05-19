@@ -50,13 +50,13 @@ class MeanShift(Base):
 def flat(X, p, bandwidth):
     '''Return the centre of mass - i.e. mean - of points in X within
     neighbourhood = bandwidth'''
-    neighbours_ = neighbours(X=X, p=p, bandwidth=bandwidth)
+    neighbours_ = neighbours(X=X, p=p, size=bandwidth)
     return np.mean(neighbours_, axis=0, keepdims=True)
 
 
 def gaussian(X, p, bandwidth):
     if X.ndim == 2:
-        neighb_ = neighbours(X=X, p=p, bandwidth=bandwidth)
+        neighb_ = neighbours(X=X, p=p, size=bandwidth)
         sq_distances = np.sum((neighb_ - p)**2, axis=1)
         exponentials = np.exp((-1/2) * sq_distances / bandwidth**2)
         numerator = np.sum(neighb_ * exponentials[:, np.newaxis], axis=0)

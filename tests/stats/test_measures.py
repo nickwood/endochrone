@@ -50,42 +50,42 @@ def test_euclidean_distances():
 
 def test_arg_neighbours():
     X = np.arange(0, 1, 0.1)
-    n1 = measures.arg_neighbours(X=X, p=np.array([0.3]), bandwidth=0.2)
+    n1 = measures.arg_neighbours(X=X, p=np.array([0.3]), size=0.2)
     assert np.all(n1 == np.arange(1, 6, dtype=int))
 
     X = np.arange(0, 10, 1).reshape(10, 1)
     exp = np.array([2, 3, 4, 5])
-    assert np.all(measures.arg_neighbours(X=X, p=3.5, bandwidth=2) == exp)
+    assert np.all(measures.arg_neighbours(X=X, p=3.5, size=2) == exp)
     exp = np.array([2, 3, 4, 5, 6, 7, 8])
-    assert np.all(measures.arg_neighbours(X=X, p=5, bandwidth=3) == exp)
+    assert np.all(measures.arg_neighbours(X=X, p=5, size=3) == exp)
 
     X2 = np.arange(0, 20, 1).reshape(10, 2)
     p2 = [3.5, 2.3]
     exp2 = np.array([0, 1, 2])
-    assert np.all(measures.arg_neighbours(X=X2, p=p2, bandwidth=4.5) == exp2)
+    assert np.all(measures.arg_neighbours(X=X2, p=p2, size=4.5) == exp2)
 
     X3 = np.arange(0, 30, 1).reshape(10, 3)
     p3 = [3.5, 2.3, 4.2]
     exp3 = np.array([0, 1, 2])
-    assert np.all(measures.arg_neighbours(X=X3, p=p3, bandwidth=8.5) == exp3)
+    assert np.all(measures.arg_neighbours(X=X3, p=p3, size=8.5) == exp3)
 
 
 def test_neighbours():
     X = np.arange(0, 10, 1).reshape(10, 1)
     exp = np.array([2, 3, 4, 5]).reshape(4, 1)
-    assert np.all(measures.neighbours(X=X, p=3.5, bandwidth=2) == exp)
+    assert np.all(measures.neighbours(X=X, p=3.5, size=2) == exp)
     exp = np.array([2, 3, 4, 5, 6, 7, 8]).reshape(7, 1)
-    assert np.all(measures.neighbours(X=X, p=5, bandwidth=3) == exp)
+    assert np.all(measures.neighbours(X=X, p=5, size=3) == exp)
 
     X2 = np.arange(0, 20, 1).reshape(10, 2)
     p2 = [3.5, 2.3]
     exp2 = np.array([[0, 1], [2, 3], [4, 5]])
-    assert np.all(measures.neighbours(X=X2, p=p2, bandwidth=4.5) == exp2)
+    assert np.all(measures.neighbours(X=X2, p=p2, size=4.5) == exp2)
 
     X3 = np.arange(0, 30, 1).reshape(10, 3)
     p3 = [3.5, 2.3, 4.2]
     exp3 = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-    assert np.all(measures.neighbours(X=X3, p=p3, bandwidth=8.5) == exp3)
+    assert np.all(measures.neighbours(X=X3, p=p3, size=8.5) == exp3)
 
 
 ltr()

@@ -15,12 +15,12 @@ def euclidean_distances(*, X, p):
     return np.array([euclidean_dist(p, com) for com in X])
 
 
-def arg_neighbours(*, X, p, bandwidth):
-    '''Return the indices of points in X which are within 'bandwidth' of p'''
-    return np.nonzero(euclidean_distances(p=p, X=X) <= bandwidth)[0]
+def arg_neighbours(*, X, p, size):
+    '''Return the indices of points in X which are within 'size' of p'''
+    return np.nonzero(euclidean_distances(p=p, X=X) <= size)[0]
 
 
-def neighbours(*, X, p, bandwidth):
-    '''Returns a list of points in "X" that are within a distance "bandwidth"
+def neighbours(*, X, p, size):
+    '''Returns a list of points in "X" that are within a distance "size"
     of point "p"'''
-    return X[arg_neighbours(X=X, p=p, bandwidth=bandwidth)]
+    return X[arg_neighbours(X=X, p=p, size=size)]
