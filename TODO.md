@@ -31,7 +31,7 @@ Clustering
 ---------
 <!-- * k-means -->
 <!-- * mean-shift -->
-* DBSCAN
+<!-- * DBSCAN -->
 * EM/GMM
 * Agglomerative Hierarchical Clustering
 
