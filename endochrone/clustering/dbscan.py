@@ -49,9 +49,10 @@ class DBSCAN(Base):
         neighbours = arg_neighbours(X=self.features_, p=self.features_[index],
                                     size=self.eps)
 
+        if not in_cluster and len(neighbours) >= self.min_samples:
+            self.max_label += 1
+
         if in_cluster or len(neighbours) >= self.min_samples:
-            if not in_cluster:
-                self.max_label += 1
             self.targets_[index] = self.max_label
             for n in neighbours:
                 self.explore_neighbourhood_(index=n, in_cluster=True)
