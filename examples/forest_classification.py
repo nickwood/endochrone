@@ -58,7 +58,7 @@ def without_pca():
 
 def pca_and_pair_plot():
     from endochrone.stats.scaling import FeatureScaling
-    from endochrone.decomposition.pca import PCA
+    from endochrone.decomposition import PCA
 
     global x
     if test_fit:
@@ -85,7 +85,7 @@ def pca_and_pair_plot():
 
 def with_pca():
     from endochrone.stats.scaling import FeatureScaling
-    from endochrone.decomposition.pca import PCA
+    from endochrone.decomposition import PCA
 
     global x
     if test_fit:

@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from endochrone.decomposition import pca
+from endochrone.decomposition import PCA
 from endochrone.utils import lazy_test_runner as ltr
 
 __author__ = "nickwood"
@@ -19,7 +19,7 @@ def test_2d_to_1d():
     X_2 = X_2_exact + X_2_noise
     X_train = np.concatenate([X_1, X_2], axis=1)
 
-    pca_model = pca.PCA(n_components=1)
+    pca_model = PCA(n_components=1)
     pca_model.fit(X_train)
 
     assert pca_model.n_components_ == 1
@@ -49,7 +49,7 @@ def test_zero_components_specified():
     X_2 = X_2_exact + X_2_noise
     X_train = np.concatenate([X_1, X_2], axis=1)
 
-    pca_model = pca.PCA()
+    pca_model = PCA()
     pca_model.fit(X_train)
 
     assert pca_model.n_components_ == 2
@@ -73,7 +73,7 @@ def test_6d_to_2d():
     X_6 = X_4 + X_1
     X_train = np.concatenate([X_1, X_2, X_3, X_4, X_5, X_6], axis=1)
 
-    pca_model = pca.PCA(n_components=2)
+    pca_model = PCA(n_components=2)
     pca_model.fit(X_train)
 
     assert pca_model.n_components_ == 2
@@ -89,7 +89,7 @@ def test_accuracy_of_inversion():
     n_features, n_samples = 6, 300
     X_train = np.random.rand(n_samples, n_features)
 
-    pcam = pca.PCA(n_components=n_features)
+    pcam = PCA(n_components=n_features)
     pcam.fit(X_train)
 
     act = pcam.inverse_transform(pcam.transform(X_train))

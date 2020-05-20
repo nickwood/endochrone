@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score
 
 from endochrone.classification import KNearest
 from endochrone.stats import metrics
-from endochrone.decomposition import pca
+from endochrone.decomposition import PCA
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -41,13 +41,13 @@ Xtrain, Xtest, Ytrain, Ytest = train_test_split(digits.data, digits.target)
 # Test run to figure out how many components we should keep
 # TODO should be able to do this with a single model
 # TODO move this above test/train split
-pcam_test = pca.PCA()
+pcam_test = PCA()
 pcam_test.fit(Xtrain)
 cutoff = 0.97  # i.e. we want to retain this % of variance
 n_comp = np.argmax(np.cumsum(pcam_test.explained_variance_ratio_) > cutoff)
 
 # Now reduce our features with this PCA model
-pcam = pca.PCA(n_components=n_comp)
+pcam = PCA(n_components=n_comp)
 pcam.fit(digits.data)
 pca_Xtrain = pcam.transform(Xtrain)
 pca_Xtest = pcam.transform(Xtest)

@@ -8,4 +8,5 @@ repos:
     rev: v0.1
     hooks:
     -   id: xenon
-        args: ["--max-average=A", "--max-modules=C", "--max-absolute=C"]
+        pass_filenames: false
+        args: ["--max-average=A", "--max-modules=C", "--max-absolute=C", "endochrone"]

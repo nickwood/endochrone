@@ -69,12 +69,12 @@ def iris_naive_knn(n_runs=10):
 
 def iris_pca():
     from mpl_toolkits import mplot3d  # noqa: F401
-    from endochrone.decomposition import pca
+    from endochrone.decomposition import PCA
 
     fig = plt.figure(facecolor="w", figsize=(14, 7))
     i_target = iris['target']
 
-    pcam_2 = pca.PCA(n_components=2)
+    pcam_2 = PCA(n_components=2)
     pcam_2.fit(i_data)
     var_sum_2 = np.abs(np.sum(pcam_2.explained_variance_ratio_))
     title_2 = '%s components, capturing %.4f%% variation' % (2, var_sum_2*100)
@@ -86,7 +86,7 @@ def iris_pca():
     ax_2.scatter(X_2, Y_2, c=i_target, s=3, marker='d', cmap='cool')
 
     # Compare to 3 component reduction
-    pcam_3 = pca.PCA(n_components=3)
+    pcam_3 = PCA(n_components=3)
     pcam_3.fit(i_data)
     var_sum_3 = np.abs(np.sum(pcam_3.explained_variance_ratio_))
     title_3 = '%s components, capturing %.4f%% variation' % (2, var_sum_3*100)
@@ -118,6 +118,6 @@ def iris_bdt():
 
 
 # iris_k_means()
-iris_naive_knn()
-# iris_pca()
+# iris_naive_knn()
+iris_pca()
 # iris_bdt()
