@@ -24,3 +24,9 @@ def neighbours(*, X, p, size):
     '''Returns a list of points in "X" that are within a distance "size"
     of point "p"'''
     return X[arg_neighbours(X=X, p=p, size=size)]
+
+
+def arg_nearest(*, X, p, n):
+    '''Return the n nearest neighbours in X to p by index. Note this will
+    return p if p is in X.'''
+    return np.argsort(euclidean_distances(p=p, X=X))[:n]

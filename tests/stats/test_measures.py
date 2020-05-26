@@ -88,4 +88,14 @@ def test_neighbours():
     assert np.all(measures.neighbours(X=X3, p=p3, size=8.5) == exp3)
 
 
+def test_arg_nearest():
+    X = np.arange(10, 20, 1).reshape(10, 1)
+    assert np.all(measures.arg_nearest(X=X, p=15, n=3) == [5, 4, 6])
+    assert np.all(measures.arg_nearest(X=X, p=15, n=5) == [5, 4, 6, 3, 7])
+
+    X2 = np.arange(0, 20, 1).reshape(10, 2)
+    p2 = [5.5, 6.3]
+    assert np.all(measures.arg_nearest(X=X2, p=p2, n=2) == [3, 2])
+
+
 ltr()
