@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from endochrone import Base
+from endochrone import Base, Transformer
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class PCA(Base):
+class PCA(Base, Transformer):
     def __init__(self, n_components=None):
         self.n_components = n_components
         super().__init__(properties={'requires_targets': False})
@@ -36,9 +36,6 @@ class PCA(Base):
     def transform(self, *, features):
         self.validate_predict(features=features)
         return (features - self.mean_)@np.transpose(self.components_)
-
-    def fit_and_transform():
-        pass
 
     def reverse(self, *, features):
         return features@self.components_ + self.mean_
