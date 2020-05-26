@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from endochrone.utils import lazy_test_runner as ltr
-from endochrone import Base
+from endochrone import Base, Transformer
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
@@ -75,6 +75,28 @@ def test_binary_only():
 
     Y_bin = np.array([0, 1, 1, 0])
     test_base.validate_fit(features=X, targets=Y_bin)
+
+
+def test_transformer():
+    class dummy(Transformer):
+        def __init__(self):
+            self.fitted = False
+            self.transformed = False
+
+        def fit(self, **kwargs):
+            self.fitted = True
+            print('foo')
+
+        def transform(self, **kwargs):
+            self.transformed = True
+
+    test_instance = dummy()
+    assert test_instance.fitted is False
+    assert test_instance.transformed is False
+
+    test_instance.fit_and_transform(features=None, targets=None)
+    assert test_instance.fitted
+    assert test_instance.transformed
 
 
 ltr()

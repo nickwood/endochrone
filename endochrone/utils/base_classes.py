@@ -47,3 +47,9 @@ class Base:
             raise ValueError("targets must be 1 dimensional")
         if features.shape[0] != targets.shape[0]:
             raise ValueError("X and Y must have same number of samples")
+
+
+class Transformer:
+    def fit_and_transform(self, *, features, targets=None, **fit_params):
+        self.fit(features=features, targets=targets, **fit_params)
+        return self.transform(features=features, targets=targets)
