@@ -42,15 +42,15 @@ Xtrain, Xtest, Ytrain, Ytest = train_test_split(digits.data, digits.target)
 # TODO should be able to do this with a single model
 # TODO move this above test/train split
 pcam_test = PCA()
-pcam_test.fit(Xtrain)
+pcam_test.fit(features=Xtrain)
 cutoff = 0.97  # i.e. we want to retain this % of variance
 n_comp = np.argmax(np.cumsum(pcam_test.explained_variance_ratio_) > cutoff)
 
 # Now reduce our features with this PCA model
 pcam = PCA(n_components=n_comp)
-pcam.fit(digits.data)
-pca_Xtrain = pcam.transform(Xtrain)
-pca_Xtest = pcam.transform(Xtest)
+pcam.fit(features=digits.data)
+pca_Xtrain = pcam.transform(features=Xtrain)
+pca_Xtest = pcam.transform(features=Xtest)
 
 # Try KNN to see if we're any good at classifying
 knn_model = KNearest()

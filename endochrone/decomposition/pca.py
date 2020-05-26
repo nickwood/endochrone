@@ -13,18 +13,18 @@ class PCA(Base):
         self.n_components = n_components
         super().__init__(properties={'requires_targets': False})
 
-    def fit(self, X_train):
-        self.validate_fit(features=X_train)
+    def fit(self, *, features):
+        self.validate_fit(features=features)
         if self.n_components is None:
-            self.n_components == X_train.shape[1]
+            self.n_components == features.shape[1]
 
-        cov_matrix = np.cov(X_train.transpose())
+        cov_matrix = np.cov(features.transpose())
         eig_vals, eig_vecs = np.linalg.eig(cov_matrix)
         eig_vecs = eig_vecs.transpose()
         var_ratios = eig_vals / np.sum(eig_vals)
 
-        self.n_samples_, self.n_features_ = X_train.shape
-        self.mean_ = np.mean(X_train, axis=0)
+        self.n_samples_, self.n_features_ = features.shape
+        self.mean_ = np.mean(features, axis=0)
 
         comp_indx = np.argsort(-np.abs(eig_vals))[:self.n_components]
         self.explained_variance_ = eig_vals[comp_indx]
@@ -33,9 +33,12 @@ class PCA(Base):
         self.n_components_ = self.components_.shape[0]
         return self
 
-    def transform(self, X_data):
-        self.validate_predict(features=X_data)
-        return (X_data - self.mean_)@np.transpose(self.components_)
+    def transform(self, *, features):
+        self.validate_predict(features=features)
+        return (features - self.mean_)@np.transpose(self.components_)
 
-    def inverse_transform(self, X_trans):
-        return X_trans@self.components_ + self.mean_
+    def fit_and_transform():
+        pass
+
+    def reverse(self, *, features):
+        return features@self.components_ + self.mean_

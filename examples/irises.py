@@ -75,10 +75,10 @@ def iris_pca():
     i_target = iris['target']
 
     pcam_2 = PCA(n_components=2)
-    pcam_2.fit(i_data)
+    pcam_2.fit(features=i_data)
     var_sum_2 = np.abs(np.sum(pcam_2.explained_variance_ratio_))
     title_2 = '%s components, capturing %.4f%% variation' % (2, var_sum_2*100)
-    red_i_data_2 = pcam_2.transform(i_data)
+    red_i_data_2 = pcam_2.transform(features=i_data)
 
     X_2 = red_i_data_2[:, 0]
     Y_2 = red_i_data_2[:, 1]
@@ -87,10 +87,10 @@ def iris_pca():
 
     # Compare to 3 component reduction
     pcam_3 = PCA(n_components=3)
-    pcam_3.fit(i_data)
+    pcam_3.fit(features=i_data)
     var_sum_3 = np.abs(np.sum(pcam_3.explained_variance_ratio_))
     title_3 = '%s components, capturing %.4f%% variation' % (2, var_sum_3*100)
-    red_i_data_3 = pcam_3.transform(i_data)
+    red_i_data_3 = pcam_3.transform(features=i_data)
 
     X_3 = red_i_data_3[:, 0]
     Y_3 = red_i_data_3[:, 1]

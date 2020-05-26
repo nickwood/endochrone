@@ -20,7 +20,7 @@ def test_2d_to_1d():
     X_train = np.concatenate([X_1, X_2], axis=1)
 
     pca_model = PCA(n_components=1)
-    pca_model.fit(X_train)
+    pca_model.fit(features=X_train)
 
     assert pca_model.n_components_ == 1
     assert pca_model.n_samples_ == n_samples
@@ -35,7 +35,7 @@ def test_2d_to_1d():
     assert principle[1]/principle[0] == pytest.approx(gradient, abs=0.2)
     assert principle[1]**2 + principle[0]**2 == pytest.approx(1)
 
-    X_transform = pca_model.transform(X_train)
+    X_transform = pca_model.transform(features=X_train)
     assert X_transform.shape == (n_samples, 1)
     assert np.mean(X_transform) == pytest.approx(0)
 
@@ -50,7 +50,7 @@ def test_zero_components_specified():
     X_train = np.concatenate([X_1, X_2], axis=1)
 
     pca_model = PCA()
-    pca_model.fit(X_train)
+    pca_model.fit(features=X_train)
 
     assert pca_model.n_components_ == 2
     assert pca_model.n_samples_ == n_samples
@@ -74,7 +74,7 @@ def test_6d_to_2d():
     X_train = np.concatenate([X_1, X_2, X_3, X_4, X_5, X_6], axis=1)
 
     pca_model = PCA(n_components=2)
-    pca_model.fit(X_train)
+    pca_model.fit(features=X_train)
 
     assert pca_model.n_components_ == 2
     assert pca_model.n_samples_ == n_samples
@@ -90,9 +90,9 @@ def test_accuracy_of_inversion():
     X_train = np.random.rand(n_samples, n_features)
 
     pcam = PCA(n_components=n_features)
-    pcam.fit(X_train)
+    pcam.fit(features=X_train)
 
-    act = pcam.inverse_transform(pcam.transform(X_train))
+    act = pcam.reverse(features=pcam.transform(features=X_train))
     assert np.all(act == pytest.approx(X_train))
 
 

@@ -75,8 +75,8 @@ def pca_and_pair_plot():
 
     N = 3
     pcam_min = PCA(n_components=N)
-    pcam_min.fit(scaled_x)
-    pca_x = pcam_min.transform(scaled_x)
+    pcam_min.fit(features=scaled_x)
+    pca_x = pcam_min.transform(features=scaled_x)
     labels = (list(range(N)) + ['species'])
     df = pd.DataFrame(np.hstack([pca_x, y[:, np.newaxis]]), columns=labels)
     sns.pairplot(df, hue='species', height=1.5)
@@ -103,7 +103,7 @@ def with_pca():
     # Then build a test PCA model so we can figure out how many components we
     # want
     pcam_test = PCA()
-    pcam_test.fit(scaled_x)
+    pcam_test.fit(features=scaled_x)
     cutoff = 0.97  # i.e. we want to retain this % of variance
     # TODO: want to be able to do this with a single PCA model
     n_comp = np.argmax(np.cumsum(pcam_test.explained_variance_ratio_) > cutoff)
@@ -116,8 +116,8 @@ def with_pca():
 
     # Transform according to the above PCA
     pcam_forest = PCA(n_components=n_comp)
-    pcam_forest.fit(scaled_x)
-    pca_x = pcam_forest.transform(scaled_x)
+    pcam_forest.fit(features=scaled_x)
+    pca_x = pcam_forest.transform(features=scaled_x)
 
     xtrain, xtest, ytrain, ytest = train_test_split(pca_x, y)
 
@@ -177,6 +177,6 @@ def visualise_entropies():
 
 
 # without_pca()
-pca_and_pair_plot()
-# with_pca()
+# pca_and_pair_plot()
+with_pca()
 # visualise_entropies()
