@@ -116,8 +116,7 @@ def with_pca():
 
     # Transform according to the above PCA
     pcam_forest = PCA(n_components=n_comp)
-    pcam_forest.fit(features=scaled_x)
-    pca_x = pcam_forest.transform(features=scaled_x)
+    pca_x = pcam_forest.fit_and_transform(features=scaled_x)
 
     xtrain, xtest, ytrain, ytest = train_test_split(pca_x, y)
 
