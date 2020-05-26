@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from endochrone import Base
+from endochrone import Base, Transformer
 
 __author__ = "nickwood"
 __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-class FeatureScaling(Base):
+class FeatureScaling(Base, Transformer):
     def __init__(self, method='z_score'):
         if method not in ['min_max', 'mean_norm', 'z_score']:
             raise ValueError('Unknown method: %s' % method)
@@ -69,10 +69,6 @@ class FeatureScaling(Base):
         else:  # method = 'z_score'
             s_feat = z_score_scale_(cols=data, **scale)
         return s_feat
-
-    def fit_and_transform(self, *, features, targets=None):
-        self.fit(features=features, targets=targets)
-        return self.transform(features=features, targets=targets)
 
     def reverse(self, *, features=None, targets=None):
         return self.transform(features=features, targets=targets, inverse=True)
