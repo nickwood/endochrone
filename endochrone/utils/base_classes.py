@@ -51,5 +51,9 @@ class Base:
 
 class Transformer:
     def fit_and_transform(self, *, features, targets=None, **fit_params):
-        self.fit(features=features, targets=targets, **fit_params)
-        return self.transform(features=features, targets=targets)
+        if targets is None:
+            self.fit(features=features, **fit_params)
+            return self.transform(features=features)
+        else:
+            self.fit(features=features, targets=targets, **fit_params)
+            return self.transform(features=features, targets=targets)

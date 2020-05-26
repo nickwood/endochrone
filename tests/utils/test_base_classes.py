@@ -78,25 +78,43 @@ def test_binary_only():
 
 
 def test_transformer():
-    class dummy(Transformer):
+    class no_targets(Transformer):
         def __init__(self):
             self.fitted = False
             self.transformed = False
 
-        def fit(self, **kwargs):
+        def fit(self, *, features):
             self.fitted = True
-            print('foo')
 
-        def transform(self, **kwargs):
+        def transform(self, *, features):
             self.transformed = True
 
-    test_instance = dummy()
+    test_instance = no_targets()
     assert test_instance.fitted is False
     assert test_instance.transformed is False
 
-    test_instance.fit_and_transform(features=None, targets=None)
+    test_instance.fit_and_transform(features=6)
     assert test_instance.fitted
     assert test_instance.transformed
+
+    class with_targets(Transformer):
+        def __init__(self):
+            self.fitted = False
+            self.transformed = False
+
+        def fit(self, *, features, targets):
+            self.fitted = True
+
+        def transform(self, *, features, targets):
+            self.transformed = True
+
+    test_instance2 = with_targets()
+    assert test_instance2.fitted is False
+    assert test_instance2.transformed is False
+
+    test_instance2.fit_and_transform(features=6, targets=5)
+    assert test_instance2.fitted
+    assert test_instance2.transformed
 
 
 ltr()
