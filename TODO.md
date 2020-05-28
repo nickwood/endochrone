@@ -17,9 +17,10 @@ classification
 <!-- * random forest -->
 <!-- * naive bayes -->
 <!-- * logistic regression -->
+<!-- * improve knn - tomek links -->
+<!-- * naive bayes + laplace smoothing -->
 * optimal margin classifier / Support vector machine
-* improve knn - tomek links & consistent subsets... - quick
-* naive bayes + laplace moving - quick
+* improve knn - consistent subsets
 * gaussian discriminant analysis
 * weighted knn
 * perceptron w/ WINNOW
@@ -43,7 +44,6 @@ Transformation/Dimension reduction
 * kernel pca
 * Factor analysis
 * atribute selection
-
 * isomap
 
 stats
