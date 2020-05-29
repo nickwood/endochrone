@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from collections import defaultdict
 
 from endochrone import Base
 
@@ -54,30 +55,32 @@ class NaiveBayes(Base):
 
     def fit_bernoulli(self, *, features, targets):
         '''populate the cond_probs_ dictionary which has structure as follows:
-        cond_probs_[feature_index][feature_value][target_index] == P(feat|targ)
+        cond_probs_[target][feature_index][feature_value] == P(feat|targ)
         NB. feature values are cast to strings
         '''
         self.cond_probs_ = {}
         lam = self.lambda_
+        cl_masks = {}
+        cl_totals = {}
 
-        t_masks = np.array([targets == cl for cl in self.classes_])
-        label_totals = np.count_nonzero(t_masks, axis=1)
+        for cl in self.classes_:
+            self.cond_probs_[cl] = defaultdict(dict)
+            cl_mask = targets == cl
+            cl_masks[cl] = cl_mask
+            cl_totals[cl] = np.count_nonzero(cl_mask)
 
         for i, feat in enumerate(features.T):
-            self.cond_probs_[i] = {}
             feat = feat.astype(str)
             feature_values = np.unique(feat)
             n_f_vals = len(feature_values)
 
             for f_val in feature_values:
-                probs = {}
                 f_mask = feat == f_val
 
                 for cl in self.classes_:
-                    numer = np.count_nonzero(f_mask & t_masks[cl]) + lam
-                    denom = label_totals[cl] + (lam * n_f_vals)
-                    probs[cl] = numer / denom
-                self.cond_probs_[i][f_val] = probs
+                    numer = np.count_nonzero(f_mask & cl_masks[cl]) + lam
+                    denom = cl_totals[cl] + (lam * n_f_vals)
+                    self.cond_probs_[cl][i][f_val] = numer / denom
 
     def predict(self, features):
         self.validate_predict(features=features)
@@ -106,4 +109,4 @@ class NaiveBayes(Base):
             exponent = -(obs - mean)**2/(2 * var)
             return coef * np.exp(exponent)
         else:
-            return self.cond_probs_[f][obs][cl]
+            return self.cond_probs_[cl][f][obs]
