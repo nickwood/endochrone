@@ -19,7 +19,7 @@ class NaiveBayes(Base):
     def fit(self, *, features, targets, pop_priors=None):
         self.validate_fit(features=features, targets=targets)
 
-        self.classes_ = dict(enumerate(np.unique(targets)))
+        self.classes_ = np.unique(targets)
         self.n_classes_ = len(self.classes_)
         self.n_samples_ = len(targets)
 
@@ -28,8 +28,7 @@ class NaiveBayes(Base):
         elif sum(pop_priors.values()) != 1:
             raise ValueError("Population priors don't sum to 1")
         else:
-            self.priors_ = np.array([pop_priors[self.classes_[cl_ind]]
-                                     for cl_ind in self.classes_.keys()])
+            self.priors_ = pop_priors
 
         if self.method == 'gaussian':
             self.fit_gaussian(features=features, targets=targets)
@@ -37,26 +36,21 @@ class NaiveBayes(Base):
             self.fit_bernoulli(features=features, targets=targets)
 
     def estimate_priors_(self, *, features, targets):
-        priors = []
-        for cl_ind in self.classes_.keys():
-            subset = features[targets == self.classes_[cl_ind]]
+        self.priors_ = {}
+        for cl in self.classes_:
+            subset = features[targets == cl]
             numer = len(subset) + self.lambda_
             denom = self.n_samples_ + self.n_classes_ * self.lambda_
-            priors.append(numer / denom)
-        self.priors_ = np.array(priors)
+            self.priors_[cl] = (numer / denom)
 
     def fit_gaussian(self, *, features, targets):
-        means = []
-        variances = []
+        self.means_ = {}
+        self.variances_ = {}
 
-        for cl_ind in self.classes_.keys():
-            subset = features[targets == self.classes_[cl_ind]]
-            means.append(np.mean(subset, axis=0))
-            variances.append(np.var(subset, ddof=1, axis=0))
-
-        dimensionality = (self.n_classes_, self.n_features_)
-        self.means_ = np.reshape(means, dimensionality)
-        self.variances_ = np.reshape(variances, dimensionality)
+        for cl in self.classes_:
+            subset = features[targets == cl]
+            self.means_[cl] = np.mean(subset, axis=0)
+            self.variances_[cl] = np.var(subset, ddof=1, axis=0)
 
     def fit_bernoulli(self, *, features, targets):
         '''populate the cond_probs_ dictionary which has structure as follows:
@@ -66,8 +60,7 @@ class NaiveBayes(Base):
         self.cond_probs_ = {}
         lam = self.lambda_
 
-        t_masks = np.array([targets == self.classes_[cl_ind]
-                            for cl_ind in self.classes_.keys()])
+        t_masks = np.array([targets == cl for cl in self.classes_])
         label_totals = np.count_nonzero(t_masks, axis=1)
 
         for i, feat in enumerate(features.T):
@@ -80,10 +73,10 @@ class NaiveBayes(Base):
                 probs = {}
                 f_mask = feat == f_val
 
-                for cl_ind in self.classes_.keys():
-                    numer = np.count_nonzero(f_mask & t_masks[cl_ind]) + lam
-                    denom = label_totals[cl_ind] + (lam * n_f_vals)
-                    probs[cl_ind] = numer / denom
+                for cl in self.classes_:
+                    numer = np.count_nonzero(f_mask & t_masks[cl]) + lam
+                    denom = label_totals[cl] + (lam * n_f_vals)
+                    probs[cl] = numer / denom
                 self.cond_probs_[i][f_val] = probs
 
     def predict(self, features):
@@ -107,8 +100,8 @@ class NaiveBayes(Base):
 
     def p_f_given_cl_(self, f, cl, obs):
         if self.method == 'gaussian':
-            var = self.variances_[cl, f]
-            mean = self.means_[cl, f]
+            var = self.variances_[cl][f]
+            mean = self.means_[cl][f]
             coef = 1/np.sqrt(2 * np.pi * var)
             exponent = -(obs - mean)**2/(2 * var)
             return coef * np.exp(exponent)

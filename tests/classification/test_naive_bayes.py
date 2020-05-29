@@ -10,7 +10,7 @@ __copyright__ = "nickwood"
 __license__ = "mit"
 
 
-def test_2d_fit_and_predict():
+def test_2d_gaussian():
     X = np.transpose([[5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75],
                       [180, 190, 170, 165, 100, 150, 130, 150],
                       [12, 11, 12, 10, 6, 8, 7, 9]])
@@ -20,17 +20,18 @@ def test_2d_fit_and_predict():
     classifier.fit(features=X, targets=Y)
 
     classes = np.array([0, 1])
-    means = np.array([[5.855, 176.25, 11.25], [5.4175, 132.5, 7.5]])
-    variances = np.array([[0.03503333, 122.91666, 0.9166667],
-                          [0.097225, 558.333333, 1.666667]])
+    means = {0: [5.855, 176.25, 11.25], 1: [5.4175, 132.5, 7.5]}
+    varians = {0: [0.03503333, 122.91666, 0.9166667],
+               1: [0.097225, 558.333333, 1.666667]}
 
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
     assert classifier.n_features_ == 3
-    assert np.all(list(classifier.classes_.keys()) == classes)
-    assert np.all(classifier.means_ == pytest.approx(means))
-    assert np.all(classifier.variances_ == pytest.approx(variances))
-    assert np.all(classifier.priors_ == 0.5)
+    assert np.all(classifier.classes_ == classes)
+    for cl in classes:
+        assert classifier.priors_[cl] == 0.5
+        assert np.all(classifier.means_[cl] == pytest.approx(means[cl]))
+        assert np.all(classifier.variances_[cl] == pytest.approx(varians[cl]))
 
     assert classifier.p_f_given_cl_(0, 0, 6) == pytest.approx(1.57888318)
     assert classifier.p_f_given_cl_(0, 1, 6) == pytest.approx(0.22345872)
@@ -52,7 +53,7 @@ def test_2d_fit_and_predict():
     assert np.all(classifier.predict(samps) == np.array([1, 0]))
 
 
-def test_1d_fit_and_predict():
+def test_1d_gaussian():
     X = np.array([5.92, 5.58, 5.92, 6, 5, 5.5, 5.42, 5.75])[:, np.newaxis]
     Y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
 
@@ -60,16 +61,18 @@ def test_1d_fit_and_predict():
     classifier.fit(features=X, targets=Y)
 
     classes = np.array([0, 1])
-    means = np.array([5.855, 5.4175])[:, np.newaxis]
-    variances = np.array([0.03503333333333331, 0.097225])[:, np.newaxis]
+    means = {0: 5.855, 1: 5.4175}
+    varians = {0: 0.03503333333333331, 1: 0.097225}
 
     assert classifier.n_classes_ == 2
     assert classifier.n_samples_ == 8
     assert classifier.n_features_ == 1
-    assert np.all(list(classifier.classes_.keys()) == classes)
-    assert np.all(classifier.means_ == pytest.approx(means))
-    assert np.all(classifier.variances_ == pytest.approx(variances))
-    assert np.all(classifier.priors_ == 0.5)
+    assert np.all(classifier.classes_ == classes)
+
+    for cl in classes:
+        assert classifier.priors_[cl] == 0.5
+        assert np.all(classifier.means_[cl] == pytest.approx(means[cl]))
+        assert np.all(classifier.variances_[cl] == pytest.approx(varians[cl]))
 
     samp = np.array([5.4])
 
@@ -89,17 +92,17 @@ def test_three_classes():
     classifier.fit(features=X, targets=Y, pop_priors=priors)
 
     classes = np.array([0, 1, 2])
-    means = np.array([5.91, 5.1, 4.5])[:, np.newaxis]
-    variances = np.array([0.0007, 0.01, 0.01])[:, np.newaxis]
+    means = {0: 5.91, 1: 5.1, 2: 4.5}
+    varians = {0: 0.0007, 1: 0.01, 2: 0.01}
 
     assert classifier.n_classes_ == 3
     assert classifier.n_samples_ == 9
     assert classifier.n_features_ == 1
-    assert np.all(list(classifier.classes_.keys()) == classes)
-    assert np.all(classifier.means_ == pytest.approx(means))
-    assert np.all(classifier.variances_ == pytest.approx(variances))
-    for i, name in classifier.classes_.items():
-        assert classifier.priors_[i] == priors[name]
+    assert np.all(classifier.classes_ == classes)
+    for cl in classes:
+        assert classifier.priors_[cl] == priors[cl]
+        assert np.all(classifier.means_[cl] == pytest.approx(means[cl]))
+        assert np.all(classifier.variances_[cl] == pytest.approx(varians[cl]))
 
     samps = np.array([5.9, 5.0, 4.8, 4.4])[:, np.newaxis]
     assert np.all(classifier.predict(samps) == np.array([0, 1, 1, 2]))
@@ -113,16 +116,17 @@ def test_lambda_smoothing():
     classifier.fit(features=X, targets=Y)
 
     classes = np.array([0, 1, 2])
-    means = np.array([6.016666667, 4.775, 2.45])[:, np.newaxis]
-    variances = np.array([0.02523333, 0.10916667, 0.005])[:, np.newaxis]
+    means = {0: 6.016666667, 1: 4.775, 2: 2.45}
+    varians = {0: 0.02523333, 1: 0.10916667, 2: 0.005}
+    priors = {0: 4/12, 1: 5/12, 2: 3/12}
 
     assert classifier.n_classes_ == 3
     assert classifier.n_samples_ == 9
     assert classifier.n_features_ == 1
-    assert np.all(classifier.priors_ == pytest.approx([4/12, 5/12, 3/12]))
-    assert np.all(list(classifier.classes_.keys()) == classes)
-    assert np.all(classifier.means_ == pytest.approx(means))
-    assert np.all(classifier.variances_ == pytest.approx(variances))
+    for cl in classes:
+        assert classifier.priors_[cl] == priors[cl]
+        assert np.all(classifier.means_[cl] == pytest.approx(means[cl]))
+        assert np.all(classifier.variances_[cl] == pytest.approx(varians[cl]))
 
     samps = np.array([5.9, 5.0, 4.8, 2.5])[:, np.newaxis]
     assert np.all(classifier.predict(samps) == np.array([0, 1, 1, 2]))
@@ -137,7 +141,8 @@ def test_known_priors():
     classifier = NaiveBayes()
     classifier.fit(features=X, targets=Y, pop_priors={0: 0.3, 1: 0.7})
 
-    assert np.all(classifier.priors_ == np.array([0.3, 0.7]))
+    assert classifier.priors_[0] == 0.3
+    assert classifier.priors_[1] == 0.7
 
     samp = np.array([6, 130, 8])
     assert classifier.posterior_numerator_(0, samp) ==\
@@ -156,8 +161,8 @@ def test_non_zero_indexed_classnames():
     priors = {1: 0.49, 2: 0.51}
     classifier.fit(features=X, targets=Y, pop_priors=priors)
 
-    for i, name in classifier.classes_.items():
-        assert classifier.priors_[i] == priors[name]
+    for cl in classifier.classes_:
+        assert classifier.priors_[cl] == priors[cl]
 
     samp = np.array([6, 130, 8])
     assert classifier.predict_single_(samp) == 1
@@ -182,8 +187,8 @@ def test_text_classes():
     assert classifier.predict_single_(samp) == 'female'
     assert classifier.predict(samp.reshape(1, 3)) == 'female'
 
-    for i, name in classifier.classes_.items():
-        assert classifier.priors_[i] == priors[name]
+    for cl in classifier.classes_:
+        assert classifier.priors_[cl] == priors[cl]
 
     samps = np.array([[6, 130, 8], [5.9, 180, 11]])
     assert np.all(classifier.predict(samps) == np.array(['female', 'male']))
@@ -197,7 +202,8 @@ def test_bernoilli():
     classifier = NaiveBayes(method='bernoulli')
     classifier.fit(features=X, targets=Y)
 
-    assert np.all(classifier.priors_ == [2/5, 3/5])
+    assert classifier.priors_[0] == pytest.approx(0.4)
+    assert classifier.priors_[1] == pytest.approx(0.6)
     assert classifier.cond_probs_[0]['0'][0] == pytest.approx(0.5)
     assert classifier.cond_probs_[0]['0'][1] == pytest.approx(2/9)
     assert classifier.cond_probs_[0]['1'][0] == pytest.approx(1/3)
@@ -225,7 +231,9 @@ def test_bernoilli_with_laplace():
     classifier = NaiveBayes(method='bernoulli', laplace_coefficient=1)
     classifier.fit(features=X, targets=Y)
 
-    assert np.all(classifier.priors_ == [7/17, 10/17])
+    assert classifier.priors_[0] == pytest.approx(7/17)
+    assert classifier.priors_[1] == pytest.approx(10/17)
+
     assert classifier.cond_probs_[0]['A'][0] == pytest.approx(4/9)
     assert classifier.cond_probs_[0]['A'][1] == pytest.approx(1/4)
     assert classifier.cond_probs_[0]['B'][0] == pytest.approx(1/3)
