@@ -189,6 +189,57 @@ def test_text_classes():
     assert np.all(classifier.predict(samps) == np.array(['female', 'male']))
 
 
+def test_bernoilli():
+    # from https://towardsdatascience.com/introduction-to-na%C3%AFve-bayes-classifier-fa59e3e24aaf  # noqa: E501
+    X = np.transpose([[0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2],
+                      ['S', 'M', 'M', 'S', 'S', 'S', 'M', 'M', 'L', 'L', 'L', 'M', 'M', 'L', 'L']])  # noqa: E501
+    Y = np.array([0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0])
+    classifier = NaiveBayes(method='bernoulli')
+    classifier.fit(features=X, targets=Y)
+
+    assert np.all(classifier.priors_ == [2/5, 3/5])
+    assert classifier.cond_probs_[0]['0'][0] == pytest.approx(0.5)
+    assert classifier.cond_probs_[0]['0'][1] == pytest.approx(2/9)
+    assert classifier.cond_probs_[0]['1'][0] == pytest.approx(1/3)
+    assert classifier.cond_probs_[0]['1'][1] == pytest.approx(1/3)
+    assert classifier.cond_probs_[0]['2'][0] == pytest.approx(1/6)
+    assert classifier.cond_probs_[0]['2'][1] == pytest.approx(4/9)
+    assert classifier.cond_probs_[1]['S'][0] == pytest.approx(0.5)
+    assert classifier.cond_probs_[1]['S'][1] == pytest.approx(1/9)
+    assert classifier.cond_probs_[1]['M'][0] == pytest.approx(1/3)
+    assert classifier.cond_probs_[1]['M'][1] == pytest.approx(4/9)
+    assert classifier.cond_probs_[1]['L'][0] == pytest.approx(1/6)
+    assert classifier.cond_probs_[1]['L'][1] == pytest.approx(4/9)
+
+    samp = np.array([1, 'S'])
+    assert classifier.posterior_numerator_(0, samp) == pytest.approx(1/15)
+    assert classifier.posterior_numerator_(1, samp) == pytest.approx(1/45)
+    assert classifier.predict_single_(samp) == 0
+    assert classifier.predict(samp.reshape(1, 2)) == [0]
+
+
+def test_bernoilli_with_laplace():
+    X = np.transpose([['A', 'A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'C', 'C', 'C', 'C', 'C'],  # noqa: E501
+                      ['S', 'M', 'M', 'S', 'S', 'S', 'M', 'M', 'L', 'L', 'L', 'M', 'M', 'L', 'L']])  # noqa: E501
+    Y = np.array([0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0])
+    classifier = NaiveBayes(method='bernoulli', laplace_coefficient=1)
+    classifier.fit(features=X, targets=Y)
+
+    assert np.all(classifier.priors_ == [7/17, 10/17])
+    assert classifier.cond_probs_[0]['A'][0] == pytest.approx(4/9)
+    assert classifier.cond_probs_[0]['A'][1] == pytest.approx(1/4)
+    assert classifier.cond_probs_[0]['B'][0] == pytest.approx(1/3)
+    assert classifier.cond_probs_[0]['B'][1] == pytest.approx(1/3)
+    assert classifier.cond_probs_[0]['C'][0] == pytest.approx(2/9)
+    assert classifier.cond_probs_[0]['C'][1] == pytest.approx(5/12)
+    assert classifier.cond_probs_[1]['S'][0] == pytest.approx(4/9)
+    assert classifier.cond_probs_[1]['S'][1] == pytest.approx(1/6)
+    assert classifier.cond_probs_[1]['M'][0] == pytest.approx(1/3)
+    assert classifier.cond_probs_[1]['M'][1] == pytest.approx(5/12)
+    assert classifier.cond_probs_[1]['L'][0] == pytest.approx(2/9)
+    assert classifier.cond_probs_[1]['L'][1] == pytest.approx(5/12)
+
+
 def test_invalid_priors():
     X = np.array([5.92, 5.75]).reshape(2, 1)
     Y = np.array([0, 1])
@@ -198,6 +249,11 @@ def test_invalid_priors():
 
     with pytest.raises(ValueError):
         classifier.fit(features=X, targets=Y, pop_priors=priors)
+
+
+def test_invalid_method():
+    with pytest.raises(ValueError):
+        _ = NaiveBayes(method='wimble')
 
 
 ltr()

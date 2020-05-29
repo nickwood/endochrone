@@ -23,32 +23,68 @@ class NaiveBayes(Base):
         self.n_classes_ = len(self.classes_)
         self.n_samples_ = len(targets)
 
-        if pop_priors is not None and sum(pop_priors.values()) != 1:
-            raise ValueError("Sum of population priors doesn't sum to 1")
+        if pop_priors is None:
+            self.estimate_priors_(features=features, targets=targets)
+        elif sum(pop_priors.values()) != 1:
+            raise ValueError("Population priors don't sum to 1")
+        else:
+            self.priors_ = np.array([pop_priors[self.classes_[cl_ind]]
+                                     for cl_ind in self.classes_.keys()])
 
-        self.fit_gaussian(features=features, targets=targets,
-                          pop_priors=pop_priors)
+        if self.method == 'gaussian':
+            self.fit_gaussian(features=features, targets=targets)
+        else:
+            self.fit_bernoulli(features=features, targets=targets)
 
-    def fit_gaussian(self, *, features, targets, pop_priors):
+    def estimate_priors_(self, *, features, targets):
+        priors = []
+        for cl_ind in self.classes_.keys():
+            subset = features[targets == self.classes_[cl_ind]]
+            numer = len(subset) + self.lambda_
+            denom = self.n_samples_ + self.n_classes_ * self.lambda_
+            priors.append(numer / denom)
+        self.priors_ = np.array(priors)
+
+    def fit_gaussian(self, *, features, targets):
         means = []
         variances = []
-        priors = []
 
         for cl_ind in self.classes_.keys():
             subset = features[targets == self.classes_[cl_ind]]
             means.append(np.mean(subset, axis=0))
             variances.append(np.var(subset, ddof=1, axis=0))
-            if pop_priors is None:
-                pri_numer = len(subset) + self.lambda_
-                pri_denom = self.n_samples_ + self.n_classes_ * self.lambda_
-                priors.append(pri_numer / pri_denom)
-            else:
-                priors.append(pop_priors[self.classes_[cl_ind]])
 
         dimensionality = (self.n_classes_, self.n_features_)
         self.means_ = np.reshape(means, dimensionality)
         self.variances_ = np.reshape(variances, dimensionality)
-        self.priors_ = np.array(priors)
+
+    def fit_bernoulli(self, *, features, targets):
+        '''populate the cond_probs_ dictionary which has structure as follows:
+        cond_probs_[feature_index][feature_value][target_index] == P(feat|targ)
+        NB. feature values are cast to strings
+        '''
+        self.cond_probs_ = {}
+        lam = self.lambda_
+
+        t_masks = np.array([targets == self.classes_[cl_ind]
+                            for cl_ind in self.classes_.keys()])
+        label_totals = np.count_nonzero(t_masks, axis=1)
+
+        for i, feat in enumerate(features.T):
+            self.cond_probs_[i] = {}
+            feat = feat.astype(str)
+            feature_values = np.unique(feat)
+            n_f_vals = len(feature_values)
+
+            for f_val in feature_values:
+                probs = {}
+                f_mask = feat == f_val
+
+                for cl_ind in self.classes_.keys():
+                    numer = np.count_nonzero(f_mask & t_masks[cl_ind]) + lam
+                    denom = label_totals[cl_ind] + (lam * n_f_vals)
+                    probs[cl_ind] = numer / denom
+                self.cond_probs_[i][f_val] = probs
 
     def predict(self, features):
         self.validate_predict(features=features)
@@ -70,8 +106,11 @@ class NaiveBayes(Base):
         return self.priors_[cl] * np.product(pds) + self.lambda_
 
     def p_f_given_cl_(self, f, cl, obs):
-        var = self.variances_[cl, f]
-        mean = self.means_[cl, f]
-        coef = 1/np.sqrt(2 * np.pi * var)
-        exponent = -(obs - mean)**2/(2 * var)
-        return coef * np.exp(exponent)
+        if self.method == 'gaussian':
+            var = self.variances_[cl, f]
+            mean = self.means_[cl, f]
+            coef = 1/np.sqrt(2 * np.pi * var)
+            exponent = -(obs - mean)**2/(2 * var)
+            return coef * np.exp(exponent)
+        else:
+            return self.cond_probs_[f][obs][cl]
